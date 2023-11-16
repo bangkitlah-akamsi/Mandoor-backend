@@ -13,9 +13,16 @@ const mitras = require('./api/mitra');
 const MitrasService = require('./services/postgres/MitrasService');
 const MitrasValidator = require('./validator/mitra');
 
+// Authentications
+const authenticationsusers = require('./api/authenticationUsers');
+const AuthenticationsUserService = require('./services/postgres/AuthenticationsUserService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validator/Authentications');
+
 const init = async () => {
   const usersService = new UsersService();
   const mitrasService = new MitrasService();
+  const authenticationsService = new AuthenticationsUserService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -40,6 +47,15 @@ const init = async () => {
       options: {
         service: mitrasService,
         validator: MitrasValidator,
+      },
+    },
+    {
+      plugin: authenticationsusers,
+      options: {
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
       },
     },
   ]);
