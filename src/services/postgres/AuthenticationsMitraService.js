@@ -1,14 +1,14 @@
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 
-class AuthenticationsUserService {
+class AuthenticationsMitraService {
   constructor() {
     this._pool = new Pool();
   }
 
   async addRefreshToken(token) {
     const query = {
-      text: 'INSERT INTO usersauthentications VALUES($1)',
+      text: 'INSERT INTO mitrasauthentications VALUES($1)',
       values: [token],
     };
 
@@ -17,7 +17,7 @@ class AuthenticationsUserService {
 
   async verifyRefreshToken(token) {
     const query = {
-      text: 'SELECT token FROM usersauthentications WHERE token = $1',
+      text: 'SELECT token FROM mitrasauthentications WHERE token = $1',
       values: [token],
     };
 
@@ -30,11 +30,11 @@ class AuthenticationsUserService {
 
   async deleteRefreshToken(token) {
     const query = {
-      text: 'DELETE FROM usersauthentications WHERE token = $1',
+      text: 'DELETE FROM mitrasauthentications WHERE token = $1',
       values: [token],
     };
     await this._pool.query(query);
   }
 }
 
-module.exports = AuthenticationsUserService;
+module.exports = AuthenticationsMitraService;

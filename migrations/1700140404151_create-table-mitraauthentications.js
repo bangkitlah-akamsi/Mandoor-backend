@@ -3,7 +3,7 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-  pgm.createTable('usersauthentications', {
+  pgm.createTable('mitrasauthentications', {
     token: {
       type: 'TEXT',
       notNull: true,
@@ -12,5 +12,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('usersauthentications');
+  pgm.dropTable('mitrasauthentications');
 };

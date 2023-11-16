@@ -3,11 +3,33 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-// const AuthenticationError = require('../../exceptions/AuthenticationError');
+const AuthenticationError = require('../../exceptions/AuthenticationError');
 
 class MitrasService {
   constructor() {
     this._pool = new Pool();
+  }
+
+  async verifyUserCredential(email) {
+    const query = {
+      text: 'SELECT id, password FROM mitras WHERE email = $1',
+      values: [email],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    }
+
+    const { id } = result.rows[0];
+
+    // const match = await bcrypt.compare(password, hashedPassword);
+
+    // if (!match) {
+    //   throw new AuthenticationError('Kredensial yang Anda berikan salah');
+    // }
+    return id;
   }
 
   async verifyNewMitraname(mitraname) {

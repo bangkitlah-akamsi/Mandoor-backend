@@ -1,8 +1,8 @@
 const ClientError = require('../../exceptions/ClientError');
 
-class AuthenticationsHandler {
-  constructor(authenticationsUserService, usersService, tokenManager, validator) {
-    this._authenticationsUserService = authenticationsUserService;
+class AuthenticationsMitraHandler {
+  constructor(authenticationsMitraService, usersService, tokenManager, validator) {
+    this._authenticationsMitraService = authenticationsMitraService;
     this._usersService = usersService;
     this._tokenManager = tokenManager;
     this._validator = validator;
@@ -22,8 +22,7 @@ class AuthenticationsHandler {
       const accessToken = this._tokenManager.generateAccessToken({ id });
       const refreshToken = this._tokenManager.generateRefreshToken({ id });
 
-      await this._authenticationsUserService.addRefreshToken(refreshToken);
-      console.log(accessToken);
+      await this._authenticationsMitraService.addRefreshToken(refreshToken);
 
       const response = h.response({
         status: 'success',
@@ -61,7 +60,7 @@ class AuthenticationsHandler {
       this._validator.validatePutAuthenticationPayload(request.payload);
 
       const { refreshToken } = request.payload;
-      await this._authenticationsUserService.verifyRefreshToken(refreshToken);
+      await this._authenticationsMitraService.verifyRefreshToken(refreshToken);
       const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
@@ -98,8 +97,8 @@ class AuthenticationsHandler {
       this._validator.validateDeleteAuthenticationPayload(request.payload);
 
       const { refreshToken } = request.payload;
-      await this._authenticationsUserService.verifyRefreshToken(refreshToken);
-      await this._authenticationsUserService.deleteRefreshToken(refreshToken);
+      await this._authenticationsMitraService.verifyRefreshToken(refreshToken);
+      await this._authenticationsMitraService.deleteRefreshToken(refreshToken);
 
       return {
         status: 'success',
@@ -127,4 +126,4 @@ class AuthenticationsHandler {
   }
 }
 
-module.exports = AuthenticationsHandler;
+module.exports = AuthenticationsMitraHandler;
