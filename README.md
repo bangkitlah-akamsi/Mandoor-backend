@@ -1,45 +1,137 @@
-# Mandoor-API
-route for Users Registration:
-add User :
-method : POST
+# Mandoor-API Documentation
+
+**ROUTE FOR USER REGISTRATION**
+
+**add User :**
+
+method : **POST**
 http://localhost:8080/users
+
 request : content JSON
 {
-    "email": "{{$timestamp}}-{{newEmail}}",
-    "username": "{{$timestamp}}-{{newUsername}}",
-    "fullname": "{{newFullname}}",
-    "password": "{{newPassword}}",
-    "nomorwa": "{{newNomorwa}}",
-    "alamat": "{{newAlamat}}"
+
+    "email": "example@gmail.com",
+    "username": "bayuds",
+    "fullname": "bayu dwi satriyo",
+    "password": "bayyy",
+    "nomorwa": "0897887766223",
+    "alamat": "surakarta"
 }
 
-get user by email :
-method : GET
+**get user by email :**
+
+method : **GET**
 http://localhost:8080/users/{email}
 
-get user by username : 
-method : GET
+**get user by username :**
+
+method : **GET**
 http://localhost:8080/users/{username}/username
 
-route for Mitra Registration :
-add Mitra :
-method : POST
-http://localhost:8080/mitras
-request payload : content JSON
+**ROUTE FOR USER AUTHENTICATIONS**
+
+**Login Users :**
+
+method : **POST**
+url : /authentications
+
+request payload : 
 {
-    "email": "{{$timestamp}}-{{newEmail}}",
-    "mitraname": "{{$timestamp}}-{{newMitraname}}",
-    "fullname": "{{newFullname}}",
-    "password": "{{newPassword}}",
-    "noKTP": "{{$timestamp}}",
-    "nomorwa": "{{$timestamp}}-{{newNomorwa}}",
-    "alamat": "{{newAlamat}}"
+
+    "email": "example@gmail.com"
+    
 }
 
-get mitra by email :
-method : GET
+**Refresh Authentication User Authentication**
+
+method : **PUT**
+url : /authentications
+
+request payload : 
+{
+
+    "refreshToken": "asdasdavvsdsdf"
+    
+}
+
+**Delete Authentication User**
+
+method : **DELETE**
+url : /authentications
+
+request payload :
+{
+
+    "refreshToken": "asdasdavvsdsdf"
+    
+}
+
+**ROUTE FOR MITRA REGISTRATION**
+
+
+**add Mitra :**
+
+method : **POST**
+http://localhost:8080/mitras
+
+request payload : content JSON
+{
+
+    "email": "example@gmail.com",
+    "mitraname": "bayudsatriyo",
+    "fullname": "bayu dwi satriyo",
+    "password": "bayy1234",
+    "noKTP": "334466228300382",
+    "nomorwa": "098865543355677",
+    "alamat": "Solo"
+}
+
+**get mitra by email :**
+
+method : **GET**
 http://localhost:8080/mitras/{email}
 
-get mitra by mitraname :
-method : GET
+**get mitra by mitraname :**
+
+method : **GET**
 http://localhost:8080/mitras/{mitraname}/mitraname
+
+**ROUTE FOR MITRA AUTHENTICATIONS**
+
+**Login Mitra**
+
+method : **POST**
+url : /mitrasauthentications
+
+request payload :
+{
+
+    "email": "example@gmail.com"
+    
+}
+
+**Refresh Authentication Mitra**
+
+Method : **PUT**
+url : /mitrasauthentications
+
+request payload : 
+{
+
+    "refreshToken": "asdasdavvsdsdf"
+    
+}
+
+**Delete Authentication Mitra**
+
+Method : **DELETE**
+url : /mitrasauthentications
+
+request payload : 
+{
+
+    "refreshToken": "asdasdavvsdsdf"
+    
+}
+
+
