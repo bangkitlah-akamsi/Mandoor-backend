@@ -17,16 +17,16 @@ class UsersHandler {
         email, username, fullname, password, nomorwa, alamat,
       } = request.payload;
 
-      const userId = await this._service.addUser({
+      const datauser = await this._service.addUser({
         email, username, fullname, password, nomorwa, alamat,
       });
-      console.log(userId);
+      console.log(datauser);
 
       const response = h.response({
         status: 'success',
         message: 'User berhasil ditambahkan',
         data: {
-          userId,
+          datauser,
         },
       });
       response.code(201);
