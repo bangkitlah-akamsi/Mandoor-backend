@@ -16,8 +16,8 @@ class AuthenticationsMitraHandler {
     try {
       this._validator.validatePostAuthenticationPayload(request.payload);
 
-      const { email } = request.payload;
-      const id = await this._usersService.verifyUserCredential(email);
+      const { email, password } = request.payload;
+      const id = await this._usersService.verifyUserCredential(email, password);
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
       const refreshToken = this._tokenManager.generateRefreshToken({ id });

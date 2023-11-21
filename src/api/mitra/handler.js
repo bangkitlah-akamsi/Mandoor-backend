@@ -17,16 +17,16 @@ class MitrasHandler {
         email, mitraname, fullname, password, noKTP, nomorwa, alamat,
       } = request.payload;
 
-      const mitraId = await this._service.addMitra({
+      const dataMitra = await this._service.addMitra({
         email, mitraname, fullname, password, noKTP, nomorwa, alamat,
       });
-      console.log(mitraId);
+      console.log(dataMitra);
 
       const response = h.response({
         status: 'success',
         message: 'Mitra berhasil ditambahkan',
         data: {
-          mitraId,
+          dataMitra,
         },
       });
       response.code(201);

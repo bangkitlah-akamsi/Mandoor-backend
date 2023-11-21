@@ -10,7 +10,7 @@ class MitrasService {
     this._pool = new Pool();
   }
 
-  async verifyUserCredential(email) {
+  async verifyUserCredential(email, password) {
     const query = {
       text: 'SELECT id, password FROM mitras WHERE email = $1',
       values: [email],
@@ -19,16 +19,16 @@ class MitrasService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new AuthenticationError('Kredensial yang Anda berikan salah');
+      throw new AuthenticationError('Kredensial yang Anda berikan salah, email salah');
     }
 
-    const { id } = result.rows[0];
+    const { id, password: hashedPassword } = result.rows[0];
 
-    // const match = await bcrypt.compare(password, hashedPassword);
+    const match = await bcrypt.compare(password, hashedPassword);
 
-    // if (!match) {
-    //   throw new AuthenticationError('Kredensial yang Anda berikan salah');
-    // }
+    if (!match) {
+      throw new AuthenticationError('Kredensial yang Anda berikan salah, password salah');
+    }
     return id;
   }
 
@@ -100,7 +100,7 @@ class MitrasService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
-      text: 'INSERT INTO mitras VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
+      text: 'INSERT INTO mitras VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, email, password',
       values: [id, email, mitraname, fullname, hashedPassword, noKTP, nomorwa, alamat],
     };
 
@@ -109,7 +109,7 @@ class MitrasService {
     if (!result.rows.length) {
       throw new InvariantError('Mitra gagal ditambahkan');
     }
-    return result.rows[0].id;
+    return result.rows[0];
   }
 
   async getMitraByEmail(email) {
