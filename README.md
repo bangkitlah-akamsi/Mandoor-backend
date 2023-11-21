@@ -38,7 +38,8 @@ url : /authentications
 request payload : 
 {
 
-    "email": "example@gmail.com"
+    "email": "example@gmail.com",
+    "password": "blablabla"
     
 }
 
@@ -106,7 +107,8 @@ url : /mitrasauthentications
 request payload :
 {
 
-    "email": "example@gmail.com"
+    "email": "example@gmail.com",
+    "password": "blablabla"
     
 }
 
