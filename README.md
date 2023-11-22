@@ -1,5 +1,11 @@
 # Mandoor-API Documentation
 
+
+**Run Server :** npm run start-dev
+
+**Run Migrate Database :** npm run migrate up / down
+
+
 **ROUTE FOR USER REGISTRATION**
 
 **add User :**
@@ -38,7 +44,8 @@ url : /authentications
 request payload : 
 {
 
-    "email": "example@gmail.com"
+    "email": "example@gmail.com",
+    "password": "blablabla"
     
 }
 
@@ -106,7 +113,8 @@ url : /mitrasauthentications
 request payload :
 {
 
-    "email": "example@gmail.com"
+    "email": "example@gmail.com",
+    "password": "blablabla"
     
 }
 
