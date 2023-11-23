@@ -5,7 +5,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 // const AuthenticationError = require('../../exceptions/AuthenticationError');
 
-class TokoService {
+class TokosService {
   constructor() {
     this._pool = new Pool();
   }
@@ -32,7 +32,7 @@ class TokoService {
   async getAllToko() {
     const result = await this._pool.query('SELECT * FROM toko');
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async getTokoById(id) {
@@ -96,7 +96,7 @@ class TokoService {
     return result.rows[0].id;
   }
 
-  async deleteSongById(id) {
+  async deleteTokoById(id) {
     const query = {
       text: 'DELETE FROM toko WHERE id = $1 RETURNING id',
       values: [id],
@@ -110,4 +110,4 @@ class TokoService {
   }
 }
 
-module.exports = TokoService;
+module.exports = TokosService;

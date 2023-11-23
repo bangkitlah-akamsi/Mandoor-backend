@@ -1,35 +1,36 @@
 const ClientError = require('../../exceptions/ClientError');
 
-class TokoHandler {
+class BarangHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
 
-    this.postTokoHandler = this.postTokoHandler.bind(this);
-    this.getAllTokoHandler = this.getAllTokoHandler.bind(this);
-    this.getTokoByIdHandler = this.getTokoByIdHandler.bind(this);
-    this.getTokoByNamaTokoHandler = this.getTokoByNamaTokoHandler.bind(this);
-    this.getTokoByNamaPemilikHandler = this.getTokoByNamaPemilikHandler.bind(this);
-    this.putTokoByIdHandler = this.putTokoByIdHandler.bind(this);
-    this.deleteTokoByIdHandler = this.deleteTokoByIdHandler.bind(this);
+    this.postBarangHandler = this.postBarangHandler.bind(this);
+    this.getAllBarangHandler = this.getAllBarangHandler.bind(this);
+    this.getBarangByIdHandler = this.getBarangByIdHandler.bind(this);
+    this.getBarangByNamaBarangHandler = this.getBarangByNamaBarangHandler.bind(this);
+    this.getBarangByNamaTokoHandler = this.getBarangByNamaTokoHandler.bind(this);
+    this.getBarangByIdTokoHandler = this.getBarangByIdTokoHandler.bind(this);
+    this.putBarangByIdHandler = this.putBarangByIdHandler.bind(this);
+    this.deleteBarangByIdHandler = this.deleteBarangByIdHandler.bind(this);
   }
 
-  async postTokoHandler(request, h) {
+  async postBarangHandler(request, h) {
     try {
-      this._validator.validateTokoPayload(request.payload);
+      this._validator.validateBarangPayload(request.payload);
       const {
-        nama_toko, nama_pemilik, kecamatan, kota, alamat,
+        toko_id, nama_barang, harga_barang, status_ketersediaan,
       } = request.payload;
 
-      const dataToko = await this._service.addToko({
-        nama_toko, nama_pemilik, kecamatan, kota, alamat,
+      const dataBarang = await this._service.addBarang({
+        toko_id, nama_barang, harga_barang, status_ketersediaan,
       });
-      console.log(dataToko);
+      console.log(dataBarang);
 
       const response = h.response({
         status: 'success',
-        message: 'Toko berhasil ditambahkan',
-        data: dataToko,
+        message: 'Barang berhasil ditambahkan',
+        data: dataBarang,
       });
       response.code(201);
       return response;
@@ -54,27 +55,26 @@ class TokoHandler {
     }
   }
 
-  async getAllTokoHandler() {
-    // to do : validation credential admin
-    const Toko = await this._service.getAllToko();
+  async getAllBarangHandler() {
+    const Barang = await this._service.getAllBarang();
     return {
       status: 'success',
       data: {
-        Toko,
+        Barang,
       },
     };
   }
 
-  async getTokoByIdHandler(request, h) {
+  async getBarangByIdHandler(request, h) {
     try {
       const { id } = request.params;
 
-      const toko = await this._service.getTokoById(id);
+      const barang = await this._service.getBarangById(id);
 
       return {
         status: 'success',
         data: {
-          toko,
+          barang,
         },
       };
     } catch (error) {
@@ -98,16 +98,48 @@ class TokoHandler {
     }
   }
 
-  async getTokoByNamaTokoHandler(request, h) {
+  async getBarangByNamaBarangHandler(request, h) {
+    try {
+      const { nama_barang } = request.params;
+
+      const barang = await this._service.getBarangByNamaBarang(nama_barang);
+      return {
+        status: 'success',
+        data: {
+          barang,
+        },
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async getBarangByNamaTokoHandler(request, h) {
     try {
       const { nama_toko } = request.params;
 
-      const toko = await this._service.getTokoByNamaToko(nama_toko);
+      const barang = await this._service.getBarangByNamaToko(nama_toko);
 
       return {
         status: 'success',
         data: {
-          toko,
+          barang,
         },
       };
     } catch (error) {
@@ -131,16 +163,16 @@ class TokoHandler {
     }
   }
 
-  async getTokoByNamaPemilikHandler(request, h) {
+  async getBarangByIdTokoHandler(request, h) {
     try {
-      const { nama_pemilik } = request.params;
+      const { toko_id } = request.params;
 
-      const toko = await this._service.getTokoByNamaPemilik(nama_pemilik);
+      const barang = await this._service.getBarangByToko(toko_id);
 
       return {
         status: 'success',
         data: {
-          toko,
+          barang,
         },
       };
     } catch (error) {
@@ -164,21 +196,21 @@ class TokoHandler {
     }
   }
 
-  async putTokoByIdHandler(request, h) {
+  async putBarangByIdHandler(request, h) {
     try {
-      this._validator.validateTokoPayload(request.payload);
+      this._validator.validateBarangPayload(request.payload);
       const {
-        nama_toko, nama_pemilik, kecamatan, kota, alamat,
+        toko_id, nama_barang, harga_barang, status_ketersediaan,
       } = request.payload;
       const { id } = request.params;
 
-      await this._service.editTokoById(id, {
-        nama_toko, nama_pemilik, kecamatan, kota, alamat,
+      await this._service.editBarangById(id, {
+        toko_id, nama_barang, harga_barang, status_ketersediaan,
       });
 
       const response = h.response({
         status: 'success',
-        message: `Toko ${nama_toko} berhasil diperbarui`,
+        message: `Barang ${nama_barang} berhasil diperbarui`,
       });
       response.code(200);
       return response;
@@ -203,13 +235,13 @@ class TokoHandler {
     }
   }
 
-  async deleteTokoByIdHandler(request, h) {
+  async deleteBarangByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      await this._service.deleteTokoById(id);
+      await this._service.deleteBarangById(id);
       const response = h.response({
         status: 'success',
-        message: 'Toko berhasil dihapus',
+        message: 'Barang berhasil dihapus',
       });
       response.code(200);
       return response;
@@ -235,4 +267,4 @@ class TokoHandler {
   }
 }
 
-module.exports = TokoHandler;
+module.exports = BarangHandler;

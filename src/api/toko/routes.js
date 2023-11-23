@@ -2,7 +2,7 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/toko',
-    handler: handler.addTokoHandler,
+    handler: handler.postTokoHandler,
   },
   {
     method: 'GET',
@@ -12,7 +12,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/toko',
-    handler: handler.getTokoHandler,
+    handler: handler.getAllTokoHandler,
   },
   {
     method: 'GET',
@@ -22,12 +22,7 @@ const routes = (handler) => [
   {
     method: 'PUT',
     path: '/toko/{id}',
-    handler: handler.editTokoByIdHandler,
-  },
-  {
-    method: 'PUT',
-    path: '/toko/{id}/profile',
-    handler: handler.editProfileTokoByIdHandler,
+    handler: handler.putTokoByIdHandler,
   },
   {
     method: 'DELETE',
