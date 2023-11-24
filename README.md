@@ -14,8 +14,8 @@ method : **POST**
 http://localhost:8080/users
 
 request : content JSON
+```
 {
-
     "email": "example@gmail.com",
     "username": "bayuds",
     "fullname": "bayu dwi satriyo",
@@ -23,6 +23,7 @@ request : content JSON
     "nomorwa": "0897887766223",
     "alamat": "surakarta"
 }
+```
 
 **get user by email :**
 
