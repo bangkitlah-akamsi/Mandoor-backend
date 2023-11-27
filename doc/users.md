@@ -35,10 +35,12 @@ method : **POST**
 url : /authentications
 
 request payload : 
-```{
+```
+{
     "email": "example@gmail.com",
     "password": "blablabla"
-}```
+}
+```
 
 **Refresh Authentication User Authentication**
 
@@ -46,9 +48,11 @@ method : **PUT**
 url : /authentications
 
 request payload : 
-```{
+```
+{
     "refreshToken": "asdasdavvsdsdf"
-}```
+}
+```
 
 **Delete Authentication User**
 
@@ -56,6 +60,8 @@ method : **DELETE**
 url : /authentications
 
 request payload :
-```{
+```
+{
     "refreshToken": "asdasdavvsdsdf"
-}```
+}
+```

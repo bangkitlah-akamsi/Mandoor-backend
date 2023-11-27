@@ -6,7 +6,8 @@ method : **POST**
 http://localhost:8080/mitras
 
 request payload : content JSON
-```{
+```
+{
     "email": "example@gmail.com",
     "mitraname": "bayudsatriyo",
     "fullname": "bayu dwi satriyo",
@@ -14,7 +15,8 @@ request payload : content JSON
     "noKTP": "334466228300382",
     "nomorwa": "098865543355677",
     "alamat": "Solo"
-}```
+}
+```
 
 **get mitra by email :**
 
@@ -34,10 +36,12 @@ method : **POST**
 url : /mitrasauthentications
 
 request payload :
-```{
+```
+{
     "email": "example@gmail.com",
     "password": "blablabla"
-}```
+}
+```
 
 **Refresh Authentication Mitra**
 
@@ -45,9 +49,11 @@ Method : **PUT**
 url : /mitrasauthentications
 
 request payload : 
-```{
+```
+{
     "refreshToken": "asdasdavvsdsdf"
-}```
+}
+```
 
 **Delete Authentication Mitra**
 
@@ -55,8 +61,10 @@ Method : **DELETE**
 url : /mitrasauthentications
 
 request payload : 
-```{
+```
+{
     "refreshToken": "asdasdavvsdsdf"
-}```
+}
+```
 
 **Pola Authentikasi bisa diunduh di link berikut => https://bit.ly/pola_auth**
