@@ -85,7 +85,7 @@ class MitrasService {
   }
 
   async addMitra({
-    email, mitraname, fullname, password, noKTP, nomorwa, alamat,
+    email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
   }) {
     // TODO: Verifikasi email, pastikan belum terdaftar sebagai mitra.
     await this.verifyNewEmail(email);
@@ -100,8 +100,9 @@ class MitrasService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
-      text: 'INSERT INTO mitras VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, email, password',
-      values: [id, email, mitraname, fullname, hashedPassword, noKTP, nomorwa, alamat],
+      text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, email, password',
+      values: [id, email, mitraname, fullname,
+        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
     };
 
     const result = await this._pool.query(query);

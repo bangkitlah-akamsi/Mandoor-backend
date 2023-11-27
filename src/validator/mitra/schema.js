@@ -8,6 +8,8 @@ const MitraPayloadSchema = Joi.object({
   noKTP: Joi.string().required(),
   nomorwa: Joi.string().required(),
   alamat: Joi.string().required(),
+  kecamatan: Joi.string().required(),
+  kota: Joi.string().required(),
 });
 
 module.exports = { MitraPayloadSchema };

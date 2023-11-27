@@ -15,6 +15,7 @@
         "linebreak-style": "off",
         "no-console": "off",
         "no-underscore-dangle": "off",
-        "camelcase": "off"
+        "camelcase": "off",
+        "no-multi-str": "off"
     }
 }

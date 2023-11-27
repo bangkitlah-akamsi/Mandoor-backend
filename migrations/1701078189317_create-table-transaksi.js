@@ -3,7 +3,7 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-  pgm.createTable('pesanan', {
+  pgm.createTable('transaksi', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
@@ -53,13 +53,8 @@ exports.up = (pgm) => {
       notNull: true,
     },
   });
-
-  pgm.addConstraint('pesanan', 'fk_pesanan.mitra_id_mitras.id', 'FOREIGN KEY(mitra_id) REFERENCES mitras(id) ON DELETE CASCADE');
-  pgm.addConstraint('pesanan', 'fk_pesanan.user_id_users.id', 'FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE');
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('pesanan', 'fk_pesanan.mitra_id_mitras.id');
-  pgm.dropConstraint('pesanan', 'fk_pesanan.user_id_users.id');
-  pgm.dropTable('pesanan');
+  pgm.dropTable('transaksi');
 };

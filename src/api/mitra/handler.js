@@ -14,11 +14,11 @@ class MitrasHandler {
     try {
       this._validator.validateMitraPayload(request.payload);
       const {
-        email, mitraname, fullname, password, noKTP, nomorwa, alamat,
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
       } = request.payload;
 
       const dataMitra = await this._service.addMitra({
-        email, mitraname, fullname, password, noKTP, nomorwa, alamat,
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
       });
       console.log(dataMitra);
 
