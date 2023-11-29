@@ -20,6 +20,11 @@ const routes = (handler) => [
     handler: handler.acceptPesananForMitra,
   },
   {
+    method: 'PUT',
+    path: '/pesananmitra/{mitra_id}',
+    handler: handler.endedPesananByMitra,
+  },
+  {
     method: 'DELETE',
     path: '/pesanan/{mitra_id}',
     handler: handler.endedPesananByMitra,

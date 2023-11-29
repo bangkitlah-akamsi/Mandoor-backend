@@ -48,11 +48,11 @@ class PesananService {
       throw new NotFoundError('Gagal Merubah total_barang, id tidak ditemukan');
     }
 
-    return result.rows[0].id;
+    return result.rows[0];
   }
 
   async addPesanan({
-    user_id, kecamatan_user, kota_user, barang, alamat,
+    user_id, kecamatan_user, kota_user, alamat,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'mencari mitra';
@@ -62,21 +62,6 @@ class PesananService {
     };
 
     const result = await this._pool.query(query);
-    let total_barang = null;
-    if (barang !== null) {
-      // Membuat array promise untuk setiap elemen barang
-      const promises = barang.map(([barang_id, jumlah_barang]) => this.addPesananHasBarang({
-        pesanan_id, barang_id, jumlah_barang,
-      }));
-
-      // Menjalankan semua promise secara paralel dan menunggu sampai selesai
-      const pesananhasbarang = await Promise.all(promises);
-
-      console.log(pesananhasbarang);
-      total_barang = await this.generateTotalBarang(pesanan_id);
-    }
-    console.log(total_barang);
-    await this.editTotalBarangById({ pesanan_id, total_barang });
 
     return result.rows[0];
   }
@@ -95,14 +80,15 @@ class PesananService {
     return result.rows[0];
   }
 
-  async verifiyMitraIdPesanan(mitra_id) {
+  async verifiyMitraIdPesanan(pesanan_id) {
     const query = {
-      text: 'SELECT * FROM pesanan WHERE mitra_id = $1',
-      values: [mitra_id],
+      text: 'SELECT mitra_id FROM pesanan WHERE id = $1',
+      values: [pesanan_id],
     };
     const result = await this._pool.query(query);
+    console.log(result.rows[0]);
 
-    if (!result.rows.length) {
+    if (result.rows[0].mitra_id === null) {
       return true;
     }
     throw new NotFoundError('Pesanan sudah diambil driver lain');
@@ -145,16 +131,17 @@ class PesananService {
   }
 
   async editPesananById({
-    pesanan_id, mitra_id,
+    pesanan_id, mitra_id, barang,
   }) {
     // to do cek mitra id apakah sudah terisi
-    await this.verifiyMitraIdPesanan(mitra_id);
+    await this.verifiyMitraIdPesanan(pesanan_id, mitra_id);
     const status = 'berjalan';
     const query = {
       text: 'UPDATE pesanan SET mitra_id = mitras.id,\
       kecamatan_mitra = mitras.kecamatan, \
       kota_mitra = mitras.kota, \
-      status_order = $3 \
+      status_order = $3, \
+      total_barang = 0 \
        FROM mitras \
        WHERE pesanan.id = $1 AND mitras.id = $2 RETURNING pesanan.id',
       values: [pesanan_id, mitra_id, status],
@@ -166,13 +153,30 @@ class PesananService {
       throw new NotFoundError('Gagal memperbarui Pesanan. Id tidak ditemukan');
     }
 
+    if (barang.length) {
+      let total_barang = 0;
+      // Membuat array promise untuk setiap elemen barang
+      const promises = barang.map(([barang_id, jumlah_barang]) => this.addPesananHasBarang({
+        pesanan_id, barang_id, jumlah_barang,
+      }));
+
+      // Menjalankan semua promise secara paralel dan menunggu sampai selesai
+      const pesananhasbarang = await Promise.all(promises);
+
+      console.log(pesananhasbarang);
+      total_barang = await this.generateTotalBarang(pesanan_id);
+      const dataPesanan = await this.editTotalBarangById({ pesanan_id, total_barang });
+      console.log(dataPesanan);
+      return dataPesanan;
+    }
+
     return result.rows[0];
   }
 
   async addTransaksiByPesanan(mitra_id) {
     const query = {
-      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total) \
-      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total \
+      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order) \
+      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order \
       FROM pesanan WHERE mitra_id = $1',
       values: [mitra_id],
     };
@@ -189,21 +193,23 @@ class PesananService {
     };
 
     const resultPesanan = await this._pool.query(queryPesanan);
+    console.log('ini id pesan1 :');
+    console.log(resultPesanan.rows[0]);
     if (!resultPesanan.rows.length) {
       throw new NotFoundError('gagal menghapus pesanan. Id tidak ditemukan');
     }
-
+    console.log('ini id pesan :');
+    console.log(resultPesanan.rows[0]);
     const pesanan_id = resultPesanan.rows[0].id;
 
     const queryPesananHasBarang = {
-      text: 'DELETE FROM pesananhasbarang WHERE pesanan_id = $1 RETURNING id',
+      text: 'DELETE FROM pesananhasbarang WHERE pesanan_id = $1 RETURNING pesanan_id',
       values: [pesanan_id],
     };
 
     const resultPesananHasBarang = await this._pool.query(queryPesananHasBarang);
-    if (!resultPesananHasBarang.rows.length) {
-      throw new NotFoundError('gagal menghapus pesanan. Id tidak ditemukan');
-    }
+    console.log('ini id pesananhasbarang :');
+    console.log(resultPesananHasBarang.rows);
     return resultPesanan.rows[0];
   }
 }

@@ -17,11 +17,11 @@ class PesananHandler {
       this._validator.validatePesanPayload(request.payload);
 
       const {
-        user_id, kecamatan_user, kota_user, barang, alamat,
+        user_id, kecamatan_user, kota_user, alamat,
       } = request.payload;
 
       const pesan = await this._service.addPesanan({
-        user_id, kecamatan_user, kota_user, barang, alamat,
+        user_id, kecamatan_user, kota_user, alamat,
       });
       console.log(pesan);
 
@@ -105,9 +105,9 @@ class PesananHandler {
     try {
       this._validator.validateAcceptedPesanPayload(request.payload);
 
-      const { pesanan_id, mitra_id } = request.payload;
+      const { pesanan_id, mitra_id, barang } = request.payload;
 
-      await this._service.editPesananById({ pesanan_id, mitra_id });
+      await this._service.editPesananById({ pesanan_id, mitra_id, barang });
 
       const response = h.response({
         status: 'success',
@@ -138,7 +138,7 @@ class PesananHandler {
 
   async endedPesananByMitra(request, h) {
     try {
-      const { mitra_id } = request.payload;
+      const { mitra_id } = request.params;
 
       await this._service.addTransaksiByPesanan(mitra_id);
       await this._service.deletePesananByMitraId(mitra_id);
