@@ -130,6 +130,8 @@ class PesananService {
     return result.rows;
   }
 
+  // todo get all pesananhasbarang
+
   async editPesananById({
     pesanan_id, mitra_id, barang,
   }) {
@@ -175,8 +177,8 @@ class PesananService {
 
   async addTransaksiByPesanan(mitra_id) {
     const query = {
-      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order) \
-      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order \
+      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu_transaksi) \
+      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu \
       FROM pesanan WHERE mitra_id = $1',
       values: [mitra_id],
     };
