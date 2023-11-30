@@ -1,6 +1,8 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const NotFoundError = require('../../exceptions/NotFoundError');
+// const InvariantError = require('../../exceptions/InvariantError');
+const ClientError = require('../../exceptions/ClientError');
 
 class SkillService {
   constructor() {
@@ -8,15 +10,19 @@ class SkillService {
   }
 
   async addSkill({ nama_skill, harga_skill, hitungan }) {
-    const id = `skill-${nanoid(16)}`;
-    const query = {
-      text: 'INSERT INTO skill VALUES($1, $2, $3, $4) RETURNING id',
-      values: [id, nama_skill, harga_skill, hitungan],
-    };
+    try {
+      const id = `skill-${nanoid(16)}`;
+      const query = {
+        text: 'INSERT INTO skill VALUES($1, $2, $3, $4) RETURNING id',
+        values: [id, nama_skill, harga_skill, hitungan],
+      };
 
-    const result = await this._pool.query(query);
+      const result = await this._pool.query(query);
 
-    return result.rows[0];
+      return result.rows[0];
+    } catch (error) {
+      throw new ClientError(error);
+    }
   }
 
   async getAllSkill() {

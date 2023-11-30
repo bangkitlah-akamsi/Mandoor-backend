@@ -84,8 +84,20 @@ class MitrasService {
     }
   }
 
+  async addSkillInMitraHasSkill({ mitra_id, element }) {
+    const id = `mitrahasskill-${nanoid(16)}`;
+    const query = {
+      text: 'INSERT INTO mitrahasskill (id, mitra_id, skill_id) VALUES($1, $2, $3) RETURNING skill_id',
+      values: [id, mitra_id, element],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
   async addMitra({
-    email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
+    email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
   }) {
     // TODO: Verifikasi email, pastikan belum terdaftar sebagai mitra.
     await this.verifyNewEmail(email);
@@ -96,12 +108,12 @@ class MitrasService {
     // TODO: Verifikasi NoKTP, pastikan belum terdaftar.
     await this.verifyNewNoKTP(noKTP);
     // TODO: Bila verifikasi lolos, maka masukkan mitra baru ke database.
-    const id = `mitra-${nanoid(16)}`;
+    const mitra_id = `mitra-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
       text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, email, password',
-      values: [id, email, mitraname, fullname,
+      values: [mitra_id, email, mitraname, fullname,
         hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
     };
 
@@ -110,7 +122,22 @@ class MitrasService {
     if (!result.rows.length) {
       throw new InvariantError('Mitra gagal ditambahkan');
     }
-    return result.rows[0];
+
+    if (skill.length) {
+      skill.forEach((element) => {
+        this.addSkillInMitraHasSkill({ mitra_id, element });
+      });
+    } else {
+      throw new InvariantError('Mitra gagal ditambahkan, harap isi skill dengan benar');
+    }
+    const dataMitra = {
+      ...result.rows[0],
+      skill,
+    };
+
+    console.log('ini data mitra : ');
+    console.log(dataMitra);
+    return dataMitra;
   }
 
   async getMitraByEmail(email) {
@@ -139,6 +166,56 @@ class MitrasService {
       throw new NotFoundError('Mitra tidak ditemukan');
     }
     return result.rows;
+  }
+
+  async verifySkill(mitra_id, element) {
+    const query = {
+      text: 'SELECT * FROM mitrahasskill WHERE mitra_id = $1 AND skill_id = $2',
+      values: [mitra_id, element],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async editMitraById(id, {
+    email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
+  }) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = {
+      text: 'UPDATE mitras SET email = $2, mitraname = $3, fullname = $4, password = $5, noktp = $6, nomorwa = $7, alamat = $8, kecamatan = $9, kota = $10) WHERE id = $1 RETURNING id, email, password',
+      values: [id, email, mitraname, fullname,
+        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui Mitra. Id tidak ditemukan');
+    }
+
+    if (skill.length) {
+      let dataSkill = false;
+      skill.forEach((element) => {
+        dataSkill = this.verifySkill(id, element);
+        if (dataSkill === true) {
+          this.addSkillInMitraHasSkill({ id, element });
+        }
+      });
+    } else {
+      throw new InvariantError('Mitra gagal ditambahkan, harap isi skill dengan benar');
+    }
+
+    const dataMitra = {
+      ...result.rows[0],
+      skill,
+    };
+
+    return dataMitra;
   }
 }
 

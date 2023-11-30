@@ -101,6 +101,8 @@ class PesananHandler {
 
   // todo get pesanan by mitra id
 
+  // todo get pesanan by skill_id
+
   async acceptPesananForMitra(request, h) {
     try {
       this._validator.validateAcceptedPesanPayload(request.payload);

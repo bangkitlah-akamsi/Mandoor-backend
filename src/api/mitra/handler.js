@@ -8,17 +8,18 @@ class MitrasHandler {
     this.postMitraHandler = this.postMitraHandler.bind(this);
     this.getMitraByEmailHandler = this.getMitraByEmailHandler.bind(this);
     this.getMitraByMitranameHandler = this.getMitraByMitranameHandler.bind(this);
+    this.putMitraByIdHandler = this.putMitraByIdHandler.bind(this);
   }
 
   async postMitraHandler(request, h) {
     try {
       this._validator.validateMitraPayload(request.payload);
       const {
-        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
       } = request.payload;
 
       const dataMitra = await this._service.addMitra({
-        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota,
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
       });
       console.log(dataMitra);
 
@@ -96,6 +97,45 @@ class MitrasHandler {
           mitra,
         },
       };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async putMitraByIdHandler(request, h) {
+    try {
+      this._validator.validateMitraPayload(request.payload);
+      const {
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
+      } = request.payload;
+      const { id } = request.params;
+
+      await this._service.editSkillById(id, {
+        email, mitraname, fullname, password, noKTP, nomorwa, alamat, kecamatan, kota, skill,
+      });
+
+      const response = h.response({
+        status: 'success',
+        message: `data ${mitraname} berhasil diperbarui`,
+      });
+      response.code(200);
+      return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({

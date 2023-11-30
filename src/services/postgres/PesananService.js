@@ -9,11 +9,13 @@ class PesananService {
     this._pool = new Pool();
   }
 
-  async addPesananHasBarang({ pesanan_id, barang_id, jumlah_barang }) {
+  async addPesananHasBarang({
+    pesanan_id, nama_barang, jumlah_barang, harga_barang,
+  }) {
     const id = `pesananhasbarang-${nanoid(16)}`;
     const query = {
-      text: 'INSERT INTO pesananhasbarang VALUES($1, $2, $3, $4) RETURNING id',
-      values: [id, pesanan_id, barang_id, jumlah_barang],
+      text: 'INSERT INTO pesananhasbarang VALUES($1, $2, $3, $4, $5) RETURNING id',
+      values: [id, pesanan_id, nama_barang, harga_barang, jumlah_barang],
     };
 
     const result = await this._pool.query(query);
@@ -23,17 +25,15 @@ class PesananService {
 
   async generateTotalBarang(pesanan_id) {
     const query = {
-      text: 'SELECT p.pesanan_id, SUM (p.jumlah_barang * b.harga_barang) AS total_barang\
-        FROM pesananhasbarang AS p\
-        JOIN barang AS b\
-        ON p.barang_id = b.id\
-        WHERE p.pesanan_id = $1 GROUP BY p.pesanan_id',
+      text: 'SELECT SUM(harga_barang * jumlah_barang) AS total_hargabarang \
+      FROM pesananhasbarang \
+      WHERE pesanan_id = $1;',
       values: [pesanan_id],
     };
 
     const result = await this._pool.query(query);
 
-    return result.rows[0].total_barang;
+    return result.rows[0].total_hargabarang;
   }
 
   async editTotalBarangById({ pesanan_id, total_barang }) {
@@ -56,9 +56,12 @@ class PesananService {
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'mencari mitra';
+    const waktu = new Date();
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, alamat, status_order) VALUES($1, $2, $3, $4, $5, $6) RETURNING id, status_order',
-      values: [pesanan_id, user_id, kecamatan_user, kota_user, alamat, status_order],
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id, status_order',
+      values: [
+        pesanan_id, user_id, kecamatan_user, kota_user, alamat, status_order, waktu.toISOString(),
+      ],
     };
 
     const result = await this._pool.query(query);
@@ -158,9 +161,11 @@ class PesananService {
     if (barang.length) {
       let total_barang = 0;
       // Membuat array promise untuk setiap elemen barang
-      const promises = barang.map(([barang_id, jumlah_barang]) => this.addPesananHasBarang({
-        pesanan_id, barang_id, jumlah_barang,
-      }));
+      const promises = barang.map(
+        ([nama_barang, jumlah_barang, harga_barang]) => this.addPesananHasBarang({
+          pesanan_id, nama_barang, jumlah_barang, harga_barang,
+        }),
+      );
 
       // Menjalankan semua promise secara paralel dan menunggu sampai selesai
       const pesananhasbarang = await Promise.all(promises);

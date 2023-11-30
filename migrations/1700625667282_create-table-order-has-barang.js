@@ -12,16 +12,17 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
-    barang_id: {
+    nama_barang: {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    harga_barang: {
+      type: 'INTEGER',
+      notNull: true,
+    },
   });
-
-  pgm.addConstraint('pesananhasbarang', 'fk_pesanan_has_barang.barang_id_barang.id', 'FOREIGN KEY(barang_id) REFERENCES barang(id) ON DELETE CASCADE');
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint('pesananhasbarang', 'fk_pesanan_has_barang.barang_id_barang.id');
   pgm.dropTable('pesananhasbarang');
 };

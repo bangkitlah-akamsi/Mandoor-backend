@@ -10,6 +10,7 @@ const MitraPayloadSchema = Joi.object({
   alamat: Joi.string().required(),
   kecamatan: Joi.string().required(),
   kota: Joi.string().required(),
+  skill: Joi.array().required(),
 });
 
 module.exports = { MitraPayloadSchema };

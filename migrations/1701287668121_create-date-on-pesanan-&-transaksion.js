@@ -6,7 +6,7 @@ exports.up = (pgm) => {
   pgm.addColumn('pesanan', {
     waktu: {
       type: 'timestamp',
-      notNull: true,
+      notNull: false,
       defaultValue: pgm.func('now()'),
     },
   });
@@ -14,11 +14,12 @@ exports.up = (pgm) => {
     waktu_transaksi: {
       type: 'timestamp',
       notNull: false,
+      defaultValue: pgm.func('now()'),
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropColumn('waktu', 'pesanan');
-  pgm.dropColumn('waktu', 'transaksi');
+  pgm.dropColumn('pesanan', 'waktu');
+  pgm.dropColumn('transaksi', 'waktu_transaksi');
 };

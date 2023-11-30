@@ -2,15 +2,8 @@
 
 exports.shorthands = undefined;
 
-exports.up = (pgm) => {
-  pgm.addColumn('pesanan', {
-    jumlah_barang: {
-      type: 'INTEGER',
-      notNull: false,
-    },
-  });
+exports.up = () => {
 };
 
-exports.down = (pgm) => {
-  pgm.dropColumn('pesanan', 'jumlah_barang');
+exports.down = () => {
 };

@@ -3,8 +3,8 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-  pgm.addColumn('pesananhasbarang', {
-    jumlah_barang: {
+  pgm.addColumn('pesananhasskill', {
+    permeter: {
       type: 'INTEGER',
       notNull: false,
     },
@@ -12,5 +12,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropColumn('pesananhasbarang', 'jumlah_barang');
+  pgm.dropColumn('pesananhasskill', 'permeter');
 };

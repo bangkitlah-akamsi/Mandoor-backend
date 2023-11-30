@@ -13,16 +13,6 @@ const mitras = require('./api/mitra');
 const MitrasService = require('./services/postgres/MitrasService');
 const MitrasValidator = require('./validator/mitra');
 
-// Toko
-const toko = require('./api/toko');
-const TokosService = require('./services/postgres/TokosService');
-const TokoValidator = require('./validator/toko');
-
-// Barang
-const barang = require('./api/barang');
-const BarangService = require('./services/postgres/BarangService');
-const BarangValidator = require('./validator/barang');
-
 // Pesanan
 const pesanan = require('./api/pesanan');
 const PesananService = require('./services/postgres/PesananService');
@@ -48,8 +38,6 @@ const init = async () => {
   const mitrasService = new MitrasService();
   const authenticationsUserService = new AuthenticationsUserService();
   const authenticationsMitraService = new AuthenticationsMitraService();
-  const tokosService = new TokosService();
-  const barangService = new BarangService();
   const pesanService = new PesananService();
   const skillService = new SkillService();
 
@@ -94,20 +82,6 @@ const init = async () => {
         mitrasService,
         tokenManager: TokenManager,
         validator: AuthenticationsValidator,
-      },
-    },
-    {
-      plugin: toko,
-      options: {
-        service: tokosService,
-        validator: TokoValidator,
-      },
-    },
-    {
-      plugin: barang,
-      options: {
-        service: barangService,
-        validator: BarangValidator,
       },
     },
     {
