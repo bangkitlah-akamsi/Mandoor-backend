@@ -124,6 +124,9 @@ class UsersService {
     }
     return result.rows;
   }
+
+  // todo edit user profile
+  // todo edit all data user
 }
 
 module.exports = UsersService;
