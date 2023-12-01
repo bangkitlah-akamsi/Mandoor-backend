@@ -51,16 +51,58 @@ class PesananService {
     return result.rows[0];
   }
 
+  async addPesananHasSkill({
+    pesanan_id, skill_id, permeter,
+  }) {
+    const id = `pesananhasbarang-${nanoid(16)}`;
+    const query = {
+      text: 'INSERT INTO pesananhasskill VALUES($1, $2, $3, $4) RETURNING id',
+      values: [id, pesanan_id, skill_id, permeter],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0];
+  }
+
+  async generateTotalHargaSkill(pesanan_id) {
+    const query = {
+      text: 'SELECT SUM (skill.harga_skill * pesananhasskill.permeter) AS total \
+      FROM pesananhasskill \
+      JOIN skill ON pesananhasskill.skill_id = skill.id \
+      WHERE pesananhasskill.pesanan_id = $1;',
+      values: [pesanan_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0].total;
+  }
+
   async addPesanan({
-    user_id, kecamatan_user, kota_user, alamat,
+    user_id, kecamatan_user, kota_user, alamat, skill,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'mencari mitra';
     const waktu = new Date();
+
+    let harga_skill = 0;
+    // Membuat array promise untuk setiap elemen barang
+    const promises = skill.map(
+      ([skill_id, permeter]) => this.addPesananHasSkill({
+        pesanan_id, skill_id, permeter,
+      }),
+    );
+
+    // Menjalankan semua promise secara paralel dan menunggu sampai selesai
+    const pesananhasskill = await Promise.all(promises);
+    harga_skill = await this.generateTotalHargaSkill(pesanan_id);
+    console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id, status_order',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, status_order',
       values: [
-        pesanan_id, user_id, kecamatan_user, kota_user, alamat, status_order, waktu.toISOString(),
+        pesanan_id, user_id, kecamatan_user, kota_user,
+        harga_skill, alamat, status_order, waktu.toISOString(),
       ],
     };
 

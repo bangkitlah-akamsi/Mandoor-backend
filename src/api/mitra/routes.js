@@ -14,6 +14,21 @@ const routes = (handler) => [
     path: '/mitras/{mitraname}/mitraname',
     handler: handler.getMitraByMitranameHandler,
   },
+  {
+    method: 'GET',
+    path: '/mitras/{id}/id',
+    handler: handler.getMitraByIdHandler,
+  },
+  {
+    method: 'GET',
+    path: '/mitras',
+    handler: handler.getMitraHandler,
+  },
+  {
+    method: 'PUT',
+    path: '/mitras/{id}',
+    handler: handler.putMitraByIdHandler,
+  },
 ];
 
 module.exports = routes;

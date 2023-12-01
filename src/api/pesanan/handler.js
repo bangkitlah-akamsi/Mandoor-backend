@@ -17,11 +17,11 @@ class PesananHandler {
       this._validator.validatePesanPayload(request.payload);
 
       const {
-        user_id, kecamatan_user, kota_user, alamat,
+        user_id, kecamatan_user, kota_user, alamat, skill,
       } = request.payload;
 
       const pesan = await this._service.addPesanan({
-        user_id, kecamatan_user, kota_user, alamat,
+        user_id, kecamatan_user, kota_user, alamat, skill,
       });
       console.log(pesan);
 

@@ -140,6 +140,16 @@ class MitrasService {
     return dataMitra;
   }
 
+  async getMitraHasSkillById(id) {
+    const query = {
+      text: 'SELECT skill_id FROM mitrahasskill WHERE mitra_id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+    console.log(result.rows);
+    return result.rows;
+  }
+
   async getMitraByEmail(email) {
     const query = {
       text: 'SELECT * FROM mitras WHERE email = $1',
@@ -152,7 +162,42 @@ class MitrasService {
       throw new NotFoundError('Mitra tidak ditemukan');
     }
 
-    return result.rows[0];
+    const skill = await this.getMitraHasSkillById(result.rows[0].id);
+    const skillarray = await skill.map((element) => element.skill_id);
+    const dataMitra = {
+      ...result.rows[0],
+      skillarray,
+    };
+
+    return dataMitra;
+  }
+
+  async getAllMitra() {
+    const result = await this._pool.query('SELECT * FROM mitras');
+
+    return result.rows;
+  }
+
+  async getMitraById(id) {
+    const query = {
+      text: 'SELECT * FROM mitras WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Mitra tidak ditemukan');
+    }
+
+    const skill = await this.getMitraHasSkillById(id);
+    const skillarray = await skill.map((element) => element.skill_id);
+    const dataMitra = {
+      ...result.rows[0],
+      skillarray,
+    };
+
+    return dataMitra;
   }
 
   async getMitraByMitraname(mitraname) {
@@ -168,18 +213,14 @@ class MitrasService {
     return result.rows;
   }
 
-  async verifySkill(mitra_id, element) {
+  async deleteMitraHasSkill(mitra_id, element) {
     const query = {
-      text: 'SELECT * FROM mitrahasskill WHERE mitra_id = $1 AND skill_id = $2',
+      text: 'DELETE FROM mitrahasskill WHERE mitra_id = $1 AND skill_id = $2 RETURNING skill_id',
       values: [mitra_id, element],
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
-      return true;
-    }
-
-    return false;
+    return result.rows[0];
   }
 
   async editMitraById(id, {
@@ -188,7 +229,7 @@ class MitrasService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
-      text: 'UPDATE mitras SET email = $2, mitraname = $3, fullname = $4, password = $5, noktp = $6, nomorwa = $7, alamat = $8, kecamatan = $9, kota = $10) WHERE id = $1 RETURNING id, email, password',
+      text: 'UPDATE mitras SET email = $2, mitraname = $3, fullname = $4, password = $5, noktp = $6, nomorwa = $7, alamat = $8, kecamatan = $9, kota = $10 WHERE id = $1 RETURNING id, email, password',
       values: [id, email, mitraname, fullname,
         hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
     };
@@ -197,14 +238,13 @@ class MitrasService {
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui Mitra. Id tidak ditemukan');
     }
+    const mitra_id = id;
 
     if (skill.length) {
-      let dataSkill = false;
-      skill.forEach((element) => {
-        dataSkill = this.verifySkill(id, element);
-        if (dataSkill === true) {
-          this.addSkillInMitraHasSkill({ id, element });
-        }
+      skill.forEach(async (element) => {
+        console.log(element);
+        await this.deleteMitraHasSkill(id, element);
+        await this.addSkillInMitraHasSkill({ mitra_id, element });
       });
     } else {
       throw new InvariantError('Mitra gagal ditambahkan, harap isi skill dengan benar');
