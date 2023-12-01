@@ -23,6 +23,11 @@ const skill = require('./api/skill');
 const SkillService = require('./services/postgres/SkillService');
 const SkillValidator = require('./validator/skill');
 
+// Skill
+const transport = require('./api/transport');
+const TransportService = require('./services/postgres/TransportService');
+const TransportValidator = require('./validator/transport');
+
 // Authentications-Users
 const authenticationsusers = require('./api/authenticationUsers');
 const AuthenticationsUserService = require('./services/postgres/AuthenticationsUserService');
@@ -40,6 +45,7 @@ const init = async () => {
   const authenticationsMitraService = new AuthenticationsMitraService();
   const pesanService = new PesananService();
   const skillService = new SkillService();
+  const transportService = new TransportService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -96,6 +102,13 @@ const init = async () => {
       options: {
         service: skillService,
         validator: SkillValidator,
+      },
+    },
+    {
+      plugin: transport,
+      options: {
+        service: transportService,
+        validator: TransportValidator,
       },
     },
   ]);

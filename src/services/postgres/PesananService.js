@@ -36,11 +36,16 @@ class PesananService {
     return result.rows[0].total_hargabarang;
   }
 
-  async editTotalBarangById({ pesanan_id, total_barang }) {
+  async editTotalBarangById({
+    pesanan_id, total_barang, transport, total,
+  }) {
     const query = {
-      text: 'UPDATE pesanan SET total_barang = $1 WHERE id = $2 RETURNING id',
-      values: [total_barang, pesanan_id],
+      text: 'UPDATE pesanan SET total_barang = $1, transport = $3, total = $4 WHERE id = $2 RETURNING id',
+      values: [total_barang, pesanan_id, transport, total],
     };
+    console.log(total_barang);
+    console.log(total);
+    console.log(typeof (total));
 
     const result = await this._pool.query(query);
 
@@ -177,6 +182,46 @@ class PesananService {
 
   // todo get all pesananhasbarang
 
+  async generateTransport(kecamatan_user, kecamatan_mitra) {
+    if (kecamatan_user === kecamatan_mitra) {
+      return 7000;
+    }
+    const query = {
+      text: 'SELECT jarak FROM transport WHERE ( kecamatan_user = $1 AND kecamatan_mitra = $2 ) \
+      OR ( kecamatan_user = $2 AND kecamatan_mitra = $1 )',
+      values: [kecamatan_user, kecamatan_mitra],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('kecamatan tidak ditemukan');
+    }
+
+    const { jarak } = result.rows[0];
+    const tarifDasar = 5000;
+    const tarifPerKM = 2000;
+    const ongkir = tarifPerKM * jarak;
+    const totalongkir = tarifDasar + ongkir;
+    console.log(`ini ongkir : ${totalongkir}`);
+    console.log(typeof (totalongkir));
+    return totalongkir;
+  }
+
+  async editTransportById(id, transport, total) {
+    const query = {
+      text: 'UPDATE pesanan SET transport = $1, total = $3 WHERE id = $2 RETURNING id, kecamatan_user, kecamatan_mitra',
+      values: [transport, id, total],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui pesanan. Id tidak ditemukan');
+    }
+
+    return result.rows[0].id;
+  }
+
   async editPesananById({
     pesanan_id, mitra_id, barang,
   }) {
@@ -190,7 +235,7 @@ class PesananService {
       status_order = $3, \
       total_barang = 0 \
        FROM mitras \
-       WHERE pesanan.id = $1 AND mitras.id = $2 RETURNING pesanan.id',
+       WHERE pesanan.id = $1 AND mitras.id = $2 RETURNING pesanan.id, pesanan.kecamatan_user, pesanan.kecamatan_mitra, pesanan.harga_skill',
       values: [pesanan_id, mitra_id, status],
     };
 
@@ -200,8 +245,14 @@ class PesananService {
       throw new NotFoundError('Gagal memperbarui Pesanan. Id tidak ditemukan');
     }
 
+    const { kecamatan_user } = result.rows[0];
+    const { kecamatan_mitra } = result.rows[0];
+    const { harga_skill } = result.rows[0];
+
+    console.log(kecamatan_user);
+    let total_barang = 0;
+    let total = 0;
     if (barang.length) {
-      let total_barang = 0;
       // Membuat array promise untuk setiap elemen barang
       const promises = barang.map(
         ([nama_barang, jumlah_barang, harga_barang]) => this.addPesananHasBarang({
@@ -214,12 +265,18 @@ class PesananService {
 
       console.log(pesananhasbarang);
       total_barang = await this.generateTotalBarang(pesanan_id);
-      const dataPesanan = await this.editTotalBarangById({ pesanan_id, total_barang });
+      const transport = await this.generateTransport(kecamatan_user, kecamatan_mitra);
+      total = parseInt(transport, 10) + parseInt(total_barang, 10) + parseInt(harga_skill, 10);
+      const dataPesanan = await this.editTotalBarangById({
+        pesanan_id, total_barang, transport, total,
+      });
       console.log(dataPesanan);
       return dataPesanan;
     }
-
-    return result.rows[0];
+    const transport = await this.generateTransport(kecamatan_user, kecamatan_mitra);
+    total = parseInt(transport, 10) + parseInt(harga_skill, 10);
+    const editPesanan = await this.editTransportById(pesanan_id, transport, total);
+    return editPesanan;
   }
 
   async addTransaksiByPesanan(mitra_id) {
