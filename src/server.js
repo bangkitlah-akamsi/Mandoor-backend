@@ -24,10 +24,14 @@ const skill = require('./api/skill');
 const SkillService = require('./services/postgres/SkillService');
 const SkillValidator = require('./validator/skill');
 
-// Skill
+// Transport
 const transport = require('./api/transport');
 const TransportService = require('./services/postgres/TransportService');
 const TransportValidator = require('./validator/transport');
+
+// Transaksi
+const transaksi = require('./api/transaksi');
+const TransaksiService = require('./services/postgres/TransaksiService');
 
 // Authentications-Users
 const authenticationsusers = require('./api/authenticationUsers');
@@ -44,9 +48,10 @@ const init = async () => {
   const mitrasService = new MitrasService();
   const authenticationsUserService = new AuthenticationsUserService();
   const authenticationsMitraService = new AuthenticationsMitraService();
-  const pesanService = new PesananService();
+  const pesanService = new PesananService(mitrasService);
   const skillService = new SkillService();
   const transportService = new TransportService();
+  const transaksiService = new TransaksiService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -110,6 +115,12 @@ const init = async () => {
       options: {
         service: transportService,
         validator: TransportValidator,
+      },
+    },
+    {
+      plugin: transaksi,
+      options: {
+        service: transaksiService,
       },
     },
   ]);

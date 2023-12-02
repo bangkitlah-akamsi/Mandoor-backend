@@ -15,6 +15,11 @@ const routes = (handler) => [
     handler: (request, h) => handler.getPesananByIdHandler(request, h),
   },
   {
+    method: 'GET',
+    path: '/pesanan/skill/{mitra_id}',
+    handler: (request, h) => handler.getPesananBySkillMitraId(request, h),
+  },
+  {
     method: 'PUT',
     path: '/pesananmitra',
     handler: (request, h) => handler.acceptPesananForMitra(request, h),

@@ -5,8 +5,9 @@ const { Pool } = require('pg');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class PesananService {
-  constructor() {
+  constructor(MitraService) {
     this._pool = new Pool();
+    this._mitraservice = MitraService;
   }
 
   async addPesananHasBarang({
@@ -130,6 +131,25 @@ class PesananService {
     return result.rows[0];
   }
 
+  async getPesananByMitraSkillId(mitra_id) {
+    const skill = await this._mitraservice.getMitraHasSkillById(mitra_id);
+    const skillarray = await skill.map((element) => element.skill_id);
+    console.log(skillarray);
+    const query = {
+      text: 'SELECT * FROM pesanan \
+      INNER JOIN pesananhasskill ON pesananhasskill.pesanan_id = pesanan.id \
+      WHERE pesananhasskill.skill_id LIKE ANY($1)',
+      values: [skillarray],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan');
+    }
+    console.log(result.rows);
+    return result.rows;
+  }
+
   async verifiyMitraIdPesanan(pesanan_id) {
     const query = {
       text: 'SELECT mitra_id FROM pesanan WHERE id = $1',
@@ -146,7 +166,7 @@ class PesananService {
 
   async editStatusPesananById(id, status) {
     const query = {
-      text: 'UPDATE pesanan SET status = $1 WHERE id = $2 RETURNING id',
+      text: 'UPDATE pesanan SET status_order = $1 WHERE mitra_id = $2 RETURNING id',
       values: [status, id],
     };
 
@@ -310,7 +330,55 @@ class PesananService {
     return result.rows[0];
   }
 
+  async deletePesananHasSkill(pesanan_id) {
+    const query = {
+      text: 'DELETE FROM pesananhasskill WHERE pesanan_id = $1 RETURNING pesanan_id',
+      values: [pesanan_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('gagal menghapus skill. Id pesanan tidak ditemukan');
+    }
+    return result.rows[0];
+  }
+
+  async deletePesananHasBarang(pesanan_id) {
+    const queryPesananHasBarang = {
+      text: 'DELETE FROM pesananhasbarang WHERE pesanan_id = $1 RETURNING pesanan_id',
+      values: [pesanan_id],
+    };
+
+    const resultPesananHasBarang = await this._pool.query(queryPesananHasBarang);
+
+    if (!resultPesananHasBarang.rows.length) {
+      throw new NotFoundError('gagal menghapus skill. Id pesanan tidak ditemukan');
+    }
+    return resultPesananHasBarang.rows[0];
+  }
+
+  async getPesananByMitraId(mitra_id) {
+    const query = {
+      text: 'SELECT id FROM pesanan WHERE mitra_id = $1',
+      values: [mitra_id],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan');
+    }
+
+    return result.rows[0].id;
+  }
+
   async deletePesananByMitraId(id) {
+    const status = 'selesai';
+    const pesanan_id = await this.editStatusPesananById(id, status);
+    await this.addTransaksiByPesanan(id);
+
+    await this.deletePesananHasSkill(pesanan_id);
+    await this.deletePesananHasBarang(pesanan_id);
     const queryPesanan = {
       text: 'DELETE FROM pesanan WHERE mitra_id = $1 RETURNING id',
       values: [id],
@@ -324,18 +392,7 @@ class PesananService {
     }
     const status_mitra = false;
     await this.editStatusMitraById(id, status_mitra);
-    console.log('ini id pesan :');
-    console.log(resultPesanan.rows[0]);
-    const pesanan_id = resultPesanan.rows[0].id;
 
-    const queryPesananHasBarang = {
-      text: 'DELETE FROM pesananhasbarang WHERE pesanan_id = $1 RETURNING pesanan_id',
-      values: [pesanan_id],
-    };
-
-    const resultPesananHasBarang = await this._pool.query(queryPesananHasBarang);
-    console.log('ini id pesananhasbarang :');
-    console.log(resultPesananHasBarang.rows);
     return resultPesanan.rows[0];
   }
 }

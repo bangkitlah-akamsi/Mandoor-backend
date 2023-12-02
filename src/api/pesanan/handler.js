@@ -1,3 +1,5 @@
+const ClientError = require('../../exceptions/ClientError');
+
 class PesananHandler {
   constructor(service, validator) {
     this._service = service;
@@ -73,7 +75,6 @@ class PesananHandler {
   async endedPesananByMitra(request, h) {
     const { mitra_id } = request.params;
 
-    await this._service.addTransaksiByPesanan(mitra_id);
     await this._service.deletePesananByMitraId(mitra_id);
     const response = h.response({
       status: 'success',
@@ -81,6 +82,37 @@ class PesananHandler {
     });
     response.code(200);
     return response;
+  }
+
+  async getPesananBySkillMitraId(request, h) {
+    try {
+      const { mitra_id } = request.params;
+
+      const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
+      return {
+        status: 'success',
+        data: {
+          dataPesanan,
+        },
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 }
 
