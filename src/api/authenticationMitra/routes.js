@@ -2,17 +2,17 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/mitrasauthentications',
-    handler: handler.postAuthenticationHandler,
+    handler: (request, h) => handler.postAuthenticationHandler(request, h),
   },
   {
     method: 'PUT',
     path: '/mitrasauthentications',
-    handler: handler.putAuthenticationHandler,
+    handler: (request, h) => handler.putAuthenticationHandler(request, h),
   },
   {
     method: 'DELETE',
     path: '/mitrasauthentications',
-    handler: handler.deleteAuthenticationHandler,
+    handler: (request, h) => handler.deleteAuthenticationHandler(request, h),
   },
 ];
 

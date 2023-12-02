@@ -1,56 +1,28 @@
-const ClientError = require('../../exceptions/ClientError');
-
 class PesananHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-
-    this.postPesananHandler = this.postPesananHandler.bind(this);
-    this.getPesananByIdHandler = this.getPesananByIdHandler.bind(this);
-    this.getAllPesananHandler = this.getAllPesananHandler.bind(this);
-    this.acceptPesananForMitra = this.acceptPesananForMitra.bind(this);
-    this.endedPesananByMitra = this.endedPesananByMitra.bind(this);
   }
 
   async postPesananHandler(request, h) {
-    try {
-      this._validator.validatePesanPayload(request.payload);
+    this._validator.validatePesanPayload(request.payload);
 
-      const {
-        user_id, kecamatan_user, kota_user, alamat, skill,
-      } = request.payload;
+    const {
+      user_id, kecamatan_user, kota_user, alamat, skill,
+    } = request.payload;
 
-      const pesan = await this._service.addPesanan({
-        user_id, kecamatan_user, kota_user, alamat, skill,
-      });
-      console.log(pesan);
+    const pesan = await this._service.addPesanan({
+      user_id, kecamatan_user, kota_user, alamat, skill,
+    });
+    console.log(pesan);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Pesanan berhasil dibuat',
-        data: pesan,
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Pesanan berhasil dibuat',
+      data: pesan,
+    });
+    response.code(201);
+    return response;
   }
 
   async getAllPesananHandler() {
@@ -64,37 +36,17 @@ class PesananHandler {
     };
   }
 
-  async getPesananByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
+  async getPesananByIdHandler(request) {
+    const { id } = request.params;
 
-      const pesanan = await this._service.getPesananById(id);
+    const pesanan = await this._service.getPesananById(id);
 
-      return {
-        status: 'success',
-        data: {
-          pesanan,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    return {
+      status: 'success',
+      data: {
+        pesanan,
+      },
+    };
   }
 
   // todo get pesanan by user id
@@ -104,71 +56,31 @@ class PesananHandler {
   // todo get pesanan by skill_id
 
   async acceptPesananForMitra(request, h) {
-    try {
-      this._validator.validateAcceptedPesanPayload(request.payload);
+    this._validator.validateAcceptedPesanPayload(request.payload);
 
-      const { pesanan_id, mitra_id, barang } = request.payload;
+    const { pesanan_id, mitra_id, barang } = request.payload;
 
-      await this._service.editPesananById({ pesanan_id, mitra_id, barang });
+    await this._service.editPesananById({ pesanan_id, mitra_id, barang });
 
-      const response = h.response({
-        status: 'success',
-        message: 'Pesanan berhasil diterima',
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Pesanan berhasil diterima',
+    });
+    response.code(200);
+    return response;
   }
 
   async endedPesananByMitra(request, h) {
-    try {
-      const { mitra_id } = request.params;
+    const { mitra_id } = request.params;
 
-      await this._service.addTransaksiByPesanan(mitra_id);
-      await this._service.deletePesananByMitraId(mitra_id);
-      const response = h.response({
-        status: 'success',
-        message: 'Pesanan telah diselesaikan',
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    await this._service.addTransaksiByPesanan(mitra_id);
+    await this._service.deletePesananByMitraId(mitra_id);
+    const response = h.response({
+      status: 'success',
+      message: 'Pesanan telah diselesaikan',
+    });
+    response.code(200);
+    return response;
   }
 }
 

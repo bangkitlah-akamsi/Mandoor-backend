@@ -2,27 +2,27 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/skill',
-    handler: handler.postSkillHandler,
+    handler: (request, h) => handler.postSkillHandler(request, h),
   },
   {
     method: 'GET',
     path: '/skill',
-    handler: handler.getAllSkillHandler,
+    handler: () => handler.getAllSkillHandler(),
   },
   {
     method: 'GET',
     path: '/skill/{id}',
-    handler: handler.getSkillByIdHandler,
+    handler: (request, h) => handler.getSkillByIdHandler(request, h),
   },
   {
     method: 'PUT',
     path: '/skill/{id}',
-    handler: handler.putSkillByIdHandler,
+    handler: (request, h) => handler.putSkillByIdHandler(request, h),
   },
   {
     method: 'DELETE',
     path: '/skill/{id}',
-    handler: handler.deleteSkillByIdHandler,
+    handler: (request, h) => handler.deleteSkillByIdHandler(request, h),
   },
 ];
 

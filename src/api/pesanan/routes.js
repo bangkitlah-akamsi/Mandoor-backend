@@ -2,32 +2,32 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/pesananuser',
-    handler: handler.postPesananHandler,
+    handler: (request, h) => handler.postPesananHandler(request, h),
   },
   {
     method: 'GET',
     path: '/pesanan',
-    handler: handler.getAllPesananHandler,
+    handler: () => handler.getAllPesananHandler(),
   },
   {
     method: 'GET',
     path: '/pesanan/{id}',
-    handler: handler.getPesananByIdHandler,
+    handler: (request, h) => handler.getPesananByIdHandler(request, h),
   },
   {
     method: 'PUT',
     path: '/pesananmitra',
-    handler: handler.acceptPesananForMitra,
+    handler: (request, h) => handler.acceptPesananForMitra(request, h),
   },
   {
     method: 'PUT',
     path: '/pesananmitra/{mitra_id}',
-    handler: handler.endedPesananByMitra,
+    handler: (request, h) => handler.endedPesananByMitra(request, h),
   },
   {
     method: 'DELETE',
     path: '/pesanan/{mitra_id}',
-    handler: handler.endedPesananByMitra,
+    handler: (request, h) => handler.endedPesananByMitra(request, h),
   },
 ];
 

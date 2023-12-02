@@ -1,23 +1,38 @@
 const routes = (handler) => [
   {
     method: 'POST',
+    path: '/user',
+    handler: (request, h) => handler.postUserHandler(request, h),
+  },
+  {
+    method: 'GET',
     path: '/users',
-    handler: handler.postUserHandler,
+    handler: () => handler.getAllUsersHandler(),
   },
   {
     method: 'GET',
-    path: '/users/{email}',
-    handler: handler.getUserByEmailHandler,
+    path: '/user/{email}',
+    handler: (request, h) => handler.getUserByEmailHandler(request, h),
   },
   {
     method: 'GET',
-    path: '/users/{username}/username',
-    handler: handler.getUserByUsernameHandler,
+    path: '/user/{username}/username',
+    handler: (request, h) => handler.getUserByUsernameHandler(request, h),
   },
   {
     method: 'GET',
-    path: '/users/{id}/id',
-    handler: handler.getUserByUsernameHandler,
+    path: '/user/{id}/id',
+    handler: (request, h) => handler.getUserByIdHandler(request, h),
+  },
+  {
+    method: 'PUT',
+    path: '/user/{id}',
+    handler: (request, h) => handler.putUserByIdHandler(request, h),
+  },
+  {
+    method: 'DELETE',
+    path: '/user/{id}',
+    handler: (request, h) => handler.deleteUserByIdHandler(request, h),
   },
 ];
 

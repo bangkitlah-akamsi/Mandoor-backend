@@ -159,10 +159,10 @@ class PesananService {
     return result.rows[0].id;
   }
 
-  async editStatusMitraById(id, status) {
+  async editStatusMitraById(id, status_mitra) {
     const query = {
-      text: 'UPDATE mitras SET status = $1 WHERE id = $2 RETURNING id',
-      values: [status, id],
+      text: 'UPDATE mitras SET status_mitra = $1 WHERE id = $2 RETURNING id',
+      values: [status_mitra, id],
     };
 
     const result = await this._pool.query(query);
@@ -222,12 +222,28 @@ class PesananService {
     return result.rows[0].id;
   }
 
+  async verifiyMitraStatusPesanan(mitra_id) {
+    const query = {
+      text: 'SELECT status_mitra FROM mitras WHERE id = $1',
+      values: [mitra_id],
+    };
+    const result = await this._pool.query(query);
+    console.log(result.rows[0].status_mitra);
+
+    if (result.rows[0].status_mitra === true) {
+      throw new NotFoundError('Mitra tidak bisa mengambil pesanan lagi karena masih menjalankan pesanan');
+    }
+    return result.rows[0].status_mitra;
+  }
+
   async editPesananById({
     pesanan_id, mitra_id, barang,
   }) {
     // to do cek mitra id apakah sudah terisi
+    await this.verifiyMitraStatusPesanan(mitra_id);
     await this.verifiyMitraIdPesanan(pesanan_id, mitra_id);
     const status = 'berjalan';
+    const status_mitra = true;
     const query = {
       text: 'UPDATE pesanan SET mitra_id = mitras.id,\
       kecamatan_mitra = mitras.kecamatan, \
@@ -244,6 +260,8 @@ class PesananService {
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui Pesanan. Id tidak ditemukan');
     }
+
+    await this.editStatusMitraById(mitra_id, status_mitra);
 
     const { kecamatan_user } = result.rows[0];
     const { kecamatan_mitra } = result.rows[0];
@@ -304,6 +322,8 @@ class PesananService {
     if (!resultPesanan.rows.length) {
       throw new NotFoundError('gagal menghapus pesanan. Id tidak ditemukan');
     }
+    const status_mitra = false;
+    await this.editStatusMitraById(id, status_mitra);
     console.log('ini id pesan :');
     console.log(resultPesanan.rows[0]);
     const pesanan_id = resultPesanan.rows[0].id;

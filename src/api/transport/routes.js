@@ -2,17 +2,17 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/transport',
-    handler: handler.postTransportHandler,
+    handler: (request, h) => handler.postTransportHandler(request, h),
   },
   {
     method: 'GET',
     path: '/transport',
-    handler: handler.getAllTransportHandler,
+    handler: () => handler.getAllTransportHandler(),
   },
   {
     method: 'DELETE',
     path: '/transport/{id}',
-    handler: handler.deleteTransportByIdHandler,
+    handler: (request, h) => handler.deleteTransportByIdHandler(request, h),
   },
 ];
 

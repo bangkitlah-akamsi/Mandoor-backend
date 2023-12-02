@@ -97,6 +97,12 @@ class UsersService {
     return result.rows[0];
   }
 
+  async getAllUsers() {
+    const result = await this._pool.query('SELECT * FROM users');
+
+    return result.rows;
+  }
+
   async getUserByEmail(email) {
     const query = {
       text: 'SELECT * FROM users WHERE email = $1',
@@ -107,6 +113,21 @@ class UsersService {
 
     if (!result.rows.length) {
       throw new NotFoundError('User tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async getUserById(id) {
+    const query = {
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Id tidak ditemukan');
     }
 
     return result.rows[0];
@@ -125,8 +146,38 @@ class UsersService {
     return result.rows;
   }
 
-  // todo edit user profile
-  // todo edit all data user
+  // todo edit user
+  async editUserById(id, {
+    email, username, fullname, password, nomorwa, alamat,
+  }) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = {
+      text: 'UPDATE users SET email = $2, username = $3, fullname = $4, password = $5, nomorwa = $6, alamat = $7 WHERE id = $1 RETURNING id, email, password',
+      values: [id, email, username, fullname,
+        hashedPassword, nomorwa, alamat],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui Mitra. Id tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async deleteUserById(id) {
+    const query = {
+      text: 'DELETE FROM users WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('gagal menghapus user. Id tidak ditemukan');
+    }
+    return result.rows[0];
+  }
 }
 
 module.exports = UsersService;

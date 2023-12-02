@@ -110,11 +110,11 @@ class MitrasService {
     // TODO: Bila verifikasi lolos, maka masukkan mitra baru ke database.
     const mitra_id = `mitra-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    const status_mitra = false;
     const query = {
-      text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, email, password',
+      text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota, status_mitra) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, email, password',
       values: [mitra_id, email, mitraname, fullname,
-        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
+        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota, status_mitra],
     };
 
     const result = await this._pool.query(query);
@@ -213,10 +213,10 @@ class MitrasService {
     return result.rows;
   }
 
-  async deleteMitraHasSkill(mitra_id, element) {
+  async deleteMitraHasSkill(mitra_id) {
     const query = {
-      text: 'DELETE FROM mitrahasskill WHERE mitra_id = $1 AND skill_id = $2 RETURNING skill_id',
-      values: [mitra_id, element],
+      text: 'DELETE FROM mitrahasskill WHERE mitra_id = $1 RETURNING skill_id',
+      values: [mitra_id],
     };
     const result = await this._pool.query(query);
 
@@ -241,9 +241,9 @@ class MitrasService {
     const mitra_id = id;
 
     if (skill.length) {
+      await this.deleteMitraHasSkill(id);
       skill.forEach(async (element) => {
         console.log(element);
-        await this.deleteMitraHasSkill(id, element);
         await this.addSkillInMitraHasSkill({ mitra_id, element });
       });
     } else {
@@ -256,6 +256,19 @@ class MitrasService {
     };
 
     return dataMitra;
+  }
+
+  async deleteMitraById(id) {
+    const query = {
+      text: 'DELETE FROM mitras WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('gagal menghapus mitra. Id tidak ditemukan');
+    }
+    return result.rows[0];
   }
 }
 
