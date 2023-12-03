@@ -54,7 +54,7 @@ const init = async () => {
   const transaksiService = new TransaksiService();
 
   const server = Hapi.server({
-    port: process.env.PORT,
+    port: 8080,
     host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
     routes: {
       cors: {
