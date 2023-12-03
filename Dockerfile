@@ -2,7 +2,10 @@ FROM node:18.15
 
 WORKDIR /usr/scr/mandoor-test
 
-COPY package*.json .
-RUN npm install
 COPY . .
+
+RUN npm install
+
+EXPOSE 8080
+
 CMD ["npm", "start-prod"]
