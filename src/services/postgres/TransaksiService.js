@@ -39,7 +39,7 @@ class TransaksiService {
       throw new NotFoundError('Id tidak ditemukan');
     }
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async getTransaksiByMitraId(id) {
@@ -54,7 +54,7 @@ class TransaksiService {
       throw new NotFoundError('Id tidak ditemukan');
     }
 
-    return result.rows[0];
+    return result.rows;
   }
 }
 
