@@ -2,7 +2,7 @@
 
 **ROUTE FOR MITRA REGISTRATION**
 
-**add Mitra :**
+- **add Mitra :**
 
 method : **POST**
 path : /mitra
@@ -44,12 +44,12 @@ response :
 
 statusCode : 201 (Created)
 
-**get mitra by email :**
+- **get mitra by email :**
 
 method : **GET**
 path : /mitras/{email}
 
-**get mitra by id :**
+- **get mitra by id :**
 
 method : **GET**
 path : /mitras/{mitra_id}/id
@@ -81,7 +81,7 @@ response :
 }
 ```
 
-**edit mitra by id :**
+- **edit mitra by id :**
 
 method : **PUT**
 path : /mitras/{mitra_id}
@@ -113,7 +113,7 @@ response :
 
 **ROUTE FOR MITRA AUTHENTICATIONS**
 
-**Login Mitra**
+- **Login Mitra**
 
 method : **POST**
 path : /mitrasauthentications
@@ -140,7 +140,7 @@ response :
 
 statusCode = 201 (Created)
 
-**Refresh Authentication Mitra**
+- **Refresh Authentication Mitra**
 
 method : **PUT**
 path : /mitrasauthentications
@@ -165,7 +165,7 @@ response :
 
 statusCode = 200(OK)
 
-**Logout Mitra**
+- **Logout Mitra**
 
 Method : **DELETE**
 url : /mitrasauthentications
@@ -188,7 +188,7 @@ response :
 statusCode = 200(OK)
 
 
-**Mitra Cek History Transaksi**
+- **Mitra Cek History Transaksi**
 
 method : **GET**
 path : /transaksi/mitra/{mitra_id}
