@@ -1,4 +1,4 @@
-**ENDPOINT :**https://mandoor-backend-ewhqw2fqpq-uc.a.run.app
+**ENDPOINT :** https://mandoor-backend-ewhqw2fqpq-uc.a.run.app
 
 **ROUTE FOR MITRA REGISTRATION**
 
