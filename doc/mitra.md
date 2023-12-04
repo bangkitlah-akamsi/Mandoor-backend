@@ -38,7 +38,8 @@ response :
             ]
         }
     }
-}```
+}
+```
 
 statusCode : 201 (Created)
 
@@ -53,7 +54,8 @@ method : **GET**
 path : /mitras/{mitra_id}/id
 
 response :
-```{
+```
+{
     "status": "success",
     "data": {
         "Mitra": {
@@ -75,7 +77,8 @@ response :
             ]
         }
     }
-}```
+}
+```
 
 **edit mitra by id :**
 
@@ -99,10 +102,12 @@ request body :
 ```
 
 response : 
-```{
+```
+{
     "status": "success",
     "message": "data bayudsatriyo berhasil diperbarui"
-}```
+}
+```
 
 
 **ROUTE FOR MITRA AUTHENTICATIONS**
@@ -128,7 +133,8 @@ response :
         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pdHJhLXhhNTQ4RWlac3VjRnpmak0iLCJpYXQiOjE3MDE2ODg4MDl9.JnfGqHoYfz9oTPPmqHCGQ_owQ91MD2BQ2K7-7wbE5H4",
         "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pdHJhLXhhNTQ4RWlac3VjRnpmak0iLCJpYXQiOjE3MDE2ODg4MDl9.3l0x1M0VPrLAoL1g9jybQIU3Wy_SeRdJzUIGtdx-SrU"
     }
-}```
+}
+```
 
 statusCode = 201 (Created)
 
@@ -145,13 +151,15 @@ request body :
 ```
 
 response :
-```{
+```
+{
     "status": "success",
     "message": "Access Token berhasil diperbarui",
     "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pdHJhLXhhNTQ4RWlac3VjRnpmak0iLCJpYXQiOjE3MDE2ODg4Njl9.HN3j0rhv9tNWCbNISBZmNGnnF2TNtNHnJ7cWcdzwqzE"
     }
-}```
+}
+```
 
 statusCode = 200(OK)
 
@@ -168,10 +176,12 @@ request body :
 ```
 
 response :
-```{
+```
+{
     "status": "success",
     "message": "Refresh token berhasil dihapus"
-}```
+}
+```
 
 statusCode = 200(OK)
 
@@ -182,7 +192,8 @@ method : **GET**
 path : /transaksi/mitra/{mitra_id}
 
 response : 
-```{
+```
+{
     "status": "success",
     "data": {
         "Transaksi": [
@@ -218,6 +229,7 @@ response :
             }
         ]
     }
-}```
+}
+```
 
 **Pola Authentikasi bisa diunduh di link berikut => https://bit.ly/pola_auth**
