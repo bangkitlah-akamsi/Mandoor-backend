@@ -22,7 +22,8 @@ request body : content JSON
 statusCode : 201 (Created)
 
 response : JSON
-```{
+```
+{
     "status": "success",
     "message": "User berhasil ditambahkan",
     "data": {
@@ -32,7 +33,8 @@ response : JSON
             "password": "$2b$10$I7Vmk9DteWck6fd5YCgoWe7UiXdQdusk9JC45unSyB.2tkST3k5QO"
         }
     }
-}```
+}
+```
 
 
 **get user by email :**
@@ -43,7 +45,8 @@ path : /users/{email}
 note : ganti {email} dengan example@gmail.com
 
 response : JSON
-```{
+```
+{
     "status": "success",
     "data": {
         "user": {
@@ -57,7 +60,8 @@ response : JSON
             "profile": null
         }
     }
-}```
+}
+```
 
 statusCode : 200 (OK)
 
@@ -69,7 +73,8 @@ path : /users/{user_id}/id
 note : ganti {user_id} dengan user-QYjoLKjLnt4Fz-rN
 
 response : JSON
-```{
+```
+{
     "status": "success",
     "data": {
         "User": {
@@ -83,7 +88,8 @@ response : JSON
             "profile": null
         }
     }
-}```
+}
+```
 
 statusCode : 200 (OK)
 
@@ -105,10 +111,12 @@ request body :
 ```
 
 response :
+```
 {
     "status": "success",
     "message": "data bayuds berhasil diperbarui"
 }
+```
 
 statusCode : 200 (OK)
 
@@ -129,14 +137,16 @@ request body :
 ```
 
 response : JSON
-```{
+```
+{
     "status": "success",
     "message": "Authentication berhasil ditambahkan",
     "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItZHJXdHFPUlE5T2J5LXhpNCIsImlhdCI6MTcwMTY4NjAyMH0.xJNwSsYXiJATAxHZCtFEtsXO4iy28fkMOCtV2FZvQj0",
         "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItZHJXdHFPUlE5T2J5LXhpNCIsImlhdCI6MTcwMTY4NjAyMH0.xi3E9l_ETFugbWEN-P1hLeZOkUGfLtj2O31U0HX2Vn4"
     }
-}```
+}
+```
 
 statusCode : 201 (Created)
 
@@ -153,13 +163,15 @@ request payload :
 ```
 
 response : JSON
-```{
+```
+{
     "status": "success",
     "message": "Access Token berhasil diperbarui",
     "data": {
         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXItZHJXdHFPUlE5T2J5LXhpNCIsImlhdCI6MTcwMTY4NjA4MX0.Ij5Ii0ZCXcvxdmWQWfMX7uqDkrZXxy2trOSPxw-WNQg"
     }
-}```
+}
+```
 
 statusCode : 200 (OK)
 
@@ -176,10 +188,12 @@ request payload :
 ```
 
 response : 
-```{
+```
+{
     "status": "success",
     "message": "Refresh token berhasil dihapus"
-}```
+}
+```
 
 statusCode : 200 (OK)
 
@@ -190,7 +204,8 @@ method : **GET**
 path : /transaksi/user/{user_id}
 
 response : 
-```{
+```
+{
     "status": "success",
     "data": {
         "Transaksi": [
@@ -226,6 +241,7 @@ response :
             }
         ]
     }
-}```
+}
+```
 
 statusCode = 200(OK)
