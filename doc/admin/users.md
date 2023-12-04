@@ -60,6 +60,7 @@ response :
         }
     }
 }
+```
 
 
 - **get user by email :**
