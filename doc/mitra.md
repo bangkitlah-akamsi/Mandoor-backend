@@ -24,7 +24,8 @@ request body : content JSON
 ```
 
 response :
-```{
+```
+{
     "status": "success",
     "message": "Mitra berhasil ditambahkan",
     "data": {
