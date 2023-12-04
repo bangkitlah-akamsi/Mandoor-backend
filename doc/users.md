@@ -2,7 +2,7 @@
 
 **ROUTE FOR USER REGISTRATION**
 
-**Registration User :**
+- **Registration User :**
 
 method : **POST**
 path : /user
@@ -37,7 +37,7 @@ response : JSON
 ```
 
 
-**get user by email :**
+- **get user by email :**
 
 method : **GET**
 path : /users/{email}
@@ -65,7 +65,7 @@ response : JSON
 
 statusCode : 200 (OK)
 
-**get user by id :**
+- **get user by id :**
 
 method : **GET**
 path : /users/{user_id}/id
@@ -93,7 +93,7 @@ response : JSON
 
 statusCode : 200 (OK)
 
-**Edit User by Id :**
+- **Edit User by Id :**
 
 method : **PUT**
 path : /user/{user_id}
@@ -123,7 +123,7 @@ statusCode : 200 (OK)
 
 **ROUTE FOR USER AUTHENTICATIONS**
 
-**Login Users :**
+- **Login Users :**
 
 method : **POST**
 path : /authentications
@@ -150,7 +150,7 @@ response : JSON
 
 statusCode : 201 (Created)
 
-**Refresh Authentication User Authentication**
+- **Refresh Authentication User Authentication**
 
 method : **PUT**
 path : /authentications
@@ -175,7 +175,7 @@ response : JSON
 
 statusCode : 200 (OK)
 
-**Logout User**
+- **Logout User**
 
 method : **DELETE**
 path : /authentications
@@ -198,7 +198,7 @@ response :
 statusCode : 200 (OK)
 
 
-**User Cek History Transaksi**
+- **User Cek History Transaksi**
 
 method : **GET**
 path : /transaksi/user/{user_id}
