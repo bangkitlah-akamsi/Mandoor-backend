@@ -5,6 +5,7 @@
 - **add Mitra :**
 
 method : **POST**
+
 path : /mitra
 
 request body : content JSON
@@ -47,11 +48,13 @@ statusCode : 201 (Created)
 - **get mitra by email :**
 
 method : **GET**
+
 path : /mitras/{email}
 
 - **get mitra by id :**
 
 method : **GET**
+
 path : /mitras/{mitra_id}/id
 
 response :
@@ -84,6 +87,7 @@ response :
 - **edit mitra by id :**
 
 method : **PUT**
+
 path : /mitras/{mitra_id}
 
 request body :
@@ -116,6 +120,7 @@ response :
 - **Login Mitra**
 
 method : **POST**
+
 path : /mitrasauthentications
 
 request body :
@@ -143,6 +148,7 @@ statusCode = 201 (Created)
 - **Refresh Authentication Mitra**
 
 method : **PUT**
+
 path : /mitrasauthentications
 
 request body : 
@@ -168,7 +174,8 @@ statusCode = 200(OK)
 - **Logout Mitra**
 
 Method : **DELETE**
-url : /mitrasauthentications
+
+path : /mitrasauthentications
 
 request body : 
 ```
@@ -191,6 +198,7 @@ statusCode = 200(OK)
 - **Mitra Cek History Transaksi**
 
 method : **GET**
+
 path : /transaksi/mitra/{mitra_id}
 
 response : 
