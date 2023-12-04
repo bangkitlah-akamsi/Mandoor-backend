@@ -5,6 +5,7 @@
 - **Registration User :**
 
 method : **POST**
+
 path : /user
 
 request body : content JSON
@@ -40,6 +41,7 @@ response : JSON
 - **get user by email :**
 
 method : **GET**
+
 path : /users/{email}
 
 note : ganti {email} dengan example@gmail.com
@@ -68,6 +70,7 @@ statusCode : 200 (OK)
 - **get user by id :**
 
 method : **GET**
+
 path : /users/{user_id}/id
 
 note : ganti {user_id} dengan user-QYjoLKjLnt4Fz-rN
@@ -96,6 +99,7 @@ statusCode : 200 (OK)
 - **Edit User by Id :**
 
 method : **PUT**
+
 path : /user/{user_id}
 
 request body : 
@@ -126,6 +130,7 @@ statusCode : 200 (OK)
 - **Login Users :**
 
 method : **POST**
+
 path : /authentications
 
 request body : 
@@ -153,6 +158,7 @@ statusCode : 201 (Created)
 - **Refresh Authentication User Authentication**
 
 method : **PUT**
+
 path : /authentications
 
 request payload : 
@@ -178,6 +184,7 @@ statusCode : 200 (OK)
 - **Logout User**
 
 method : **DELETE**
+
 path : /authentications
 
 request payload :
@@ -201,6 +208,7 @@ statusCode : 200 (OK)
 - **User Cek History Transaksi**
 
 method : **GET**
+
 path : /transaksi/user/{user_id}
 
 response : 
