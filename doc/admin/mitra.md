@@ -51,6 +51,12 @@ method : **GET**
 
 path : /mitras/{email}
 
+- **get mitra by mitraname :**
+
+method : **GET**
+
+path : /mitras/{mitraname}/mitraname
+
 - **get mitra by id :**
 
 method : **GET**
@@ -84,6 +90,40 @@ response :
 }
 ```
 
+- **get mitra all mitra :**
+
+method : **GET**
+
+path : /mitras
+
+response : 
+```
+{
+    "status": "success",
+    "data": {
+        "dataMitra": [
+            {
+                "id": "mitra-B7lp4nsqTtXDIhr8",
+                "email": "examplemitra@gmail.com",
+                "mitraname": "bayudsatriyo",
+                "fullname": "bayu dwi satriyo",
+                "password": "$2b$10$0YbX5WGqDUKHytVLHVemD.OTDOKFLzgzf49DqT6E2P8DRQrS2KkZi",
+                "noktp": "1701687877",
+                "nomorwa": "1701687877-082133666506",
+                "alamat": "tunggulsari",
+                "profile": null,
+                "kecamatan": "Jebres",
+                "kota": "Surakarta",
+                "status_mitra": false
+            }
+        ]
+    }
+}
+```
+
+statusCode = 200(OK)
+
+
 - **edit mitra by id :**
 
 method : **PUT**
@@ -111,6 +151,20 @@ response :
 {
     "status": "success",
     "message": "data bayudsatriyo berhasil diperbarui"
+}
+```
+
+- **delete mitra by id :**
+
+method : **DELETE**
+
+path : /mitras/{mitra_id}
+
+response :
+```
+{
+    "status": "success",
+    "message": "Mitra berhasil dihapus"
 }
 ```
 
@@ -193,55 +247,5 @@ response :
 ```
 
 statusCode = 200(OK)
-
-
-- **Mitra Cek History Transaksi**
-
-method : **GET**
-
-path : /transaksi/mitra/{mitra_id}
-
-response : 
-```
-{
-    "status": "success",
-    "data": {
-        "Transaksi": [
-            {
-                "id": "pesanan-btz3KDB6BN1ijkMg",
-                "mitra_id": "mitra-B7lp4nsqTtXDIhr8",
-                "user_id": "user-QYjoLKjLnt4Fz-rN",
-                "kecamatan_user": "Laweyan",
-                "kota_user": "Surakarta",
-                "kecamatan_mitra": "Jebres",
-                "kota_mitra": "Surakarta",
-                "total_barang": 14000,
-                "harga_skill": 100000,
-                "transport": 14400,
-                "total": 128400,
-                "status_order": "selesai",
-                "waktu_transaksi": "2023-12-04T05:05:48.988Z"
-            },
-            {
-                "id": "pesanan-5Xy1lhtiPu6_3e9w",
-                "mitra_id": "mitra-B7lp4nsqTtXDIhr8",
-                "user_id": "user-QYjoLKjLnt4Fz-rN",
-                "kecamatan_user": "Laweyan",
-                "kota_user": "Surakarta",
-                "kecamatan_mitra": "Jebres",
-                "kota_mitra": "Surakarta",
-                "total_barang": 14000,
-                "harga_skill": 100000,
-                "transport": 14400,
-                "total": 128400,
-                "status_order": "selesai",
-                "waktu_transaksi": "2023-12-04T05:06:08.016Z"
-            }
-        ]
-    }
-}
-```
-
-statusCode = 200 (OK)
 
 **Pola Authentikasi bisa diunduh di link berikut => https://bit.ly/pola_auth**
