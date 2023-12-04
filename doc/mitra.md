@@ -126,7 +126,8 @@ request body :
 ```
 
 response : 
-```{
+```
+{
     "status": "success",
     "message": "Authentication berhasil ditambahkan",
     "data": {
