@@ -33,6 +33,9 @@ const TransportValidator = require('./validator/transport');
 const transaksi = require('./api/transaksi');
 const TransaksiService = require('./services/postgres/TransaksiService');
 
+// Token Snap
+const tokensnap = require('./api/tokenizerSnap');
+
 // Authentications-Users
 const authenticationsusers = require('./api/authenticationUsers');
 const AuthenticationsUserService = require('./services/postgres/AuthenticationsUserService');
@@ -121,6 +124,12 @@ const init = async () => {
       plugin: transaksi,
       options: {
         service: transaksiService,
+      },
+    },
+    {
+      plugin: tokensnap,
+      options: {
+        service: pesanService,
       },
     },
   ]);

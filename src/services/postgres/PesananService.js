@@ -131,6 +131,39 @@ class PesananService {
     return result.rows[0];
   }
 
+  async getPesananSnapById(id) {
+    const query = {
+      text: 'SELECT pesanan.*, fullname, email \
+      FROM pesanan INNER JOIN users ON user_id = users.id \
+      WHERE pesanan.id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan');
+    }
+    console.log(result.rows[0]);
+    return result.rows[0];
+  }
+
+  async getPesananHasSkillSnapById(id) {
+    const query = {
+      text: 'SELECT pesananhasskill.*, nama_skill, harga_skill \
+      FROM pesananhasskill \
+      INNER JOIN skill ON skill_id = skill.id \
+      WHERE pesananhasskill.pesanan_id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan');
+    }
+    console.log(result.rows);
+    return result.rows;
+  }
+
   async getPesananByMitraSkillId(mitra_id) {
     const skill = await this._mitraservice.getMitraHasSkillById(mitra_id);
     const skillarray = await skill.map((element) => element.skill_id);
