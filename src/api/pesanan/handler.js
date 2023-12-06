@@ -62,11 +62,11 @@ class PesananHandler {
 
     const { pesanan_id, mitra_id, barang } = request.payload;
 
-    await this._service.editPesananById({ pesanan_id, mitra_id, barang });
+    const result = await this._service.editPesananById({ pesanan_id, mitra_id, barang });
 
     const response = h.response({
       status: 'success',
-      message: 'Pesanan berhasil diterima',
+      message: result,
     });
     response.code(200);
     return response;

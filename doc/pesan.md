@@ -25,8 +25,20 @@ response :
     "status": "success",
     "message": "Pesanan berhasil dibuat",
     "data": {
-        "id": "pesanan-5T6zRhKMGoHbPjsv",
-        "status_order": "mencari mitra"
+        "id": "pesanan-Sqda81e1r8meRhOc",
+        "mitra_id": null,
+        "user_id": "user-ZhMAZArxM50H8oih",
+        "kecamatan_user": "Pasar Kliwon",
+        "kota_user": "Surakarta",
+        "kecamatan_mitra": null,
+        "kota_mitra": null,
+        "total_barang": null,
+        "harga_skill": 250000,
+        "transport": null,
+        "total": null,
+        "status_order": "search mitra",
+        "alamat": "tunggulsari pajang",
+        "waktu": "2023-12-06T05:03:14.145Z"
     }
 }
 ```
@@ -109,23 +121,67 @@ response :
 ```
 {
     "status": "success",
-    "message": "Pesanan berhasil diterima"
+    "message": {
+        "id": "pesanan-buq0crRd0UBmmVAx",
+        "mitra_id": "mitra-MNLCyty1GcSc86Fk",
+        "user_id": "user-ZhMAZArxM50H8oih",
+        "kecamatan_user": "Pasar Kliwon",
+        "kota_user": "Surakarta",
+        "kecamatan_mitra": "Serengan",
+        "kota_mitra": "Surakarta",
+        "total_barang": 14000,
+        "harga_skill": 250000,
+        "transport": 10600,
+        "total": 274600,
+        "status_order": "wait payment",
+        "alamat": "tunggulsari pajang",
+        "waktu": "2023-12-06T05:37:10.422Z"
+    }
 }
 ```
 
 statusCode : 200 (OK)
 
-- **Mitra Ended Order**
+- **User After Pay Order**
 
 method : **PUT**
 
+path : /pesanan/payment/{{pesanan_id}}
+
+response :
+```
+{
+    "status": "success",
+    "data": {
+        "dataPesanan": {
+            "id": "pesanan-bCafoec4RTIkUpLu",
+            "status_order": "payment success"
+        }
+    }
+}
+```
+
+- **Mitra Ended Order**
+
+method : **DELETE**
+
 path : /pesananmitra/{mitra_id}
+
+Jika Pesanan Berhasil, maka 
 
 response : 
 ```
 {
     "status": "success",
     "message": "Pesanan telah diselesaikan"
+}
+```
+
+Jika Pesanan dibatalkan maka
+```
+{
+    "status": "success",
+    "message": "Pesanan telah dibatalkan"
 }
 ```
 

@@ -41,7 +41,7 @@ class PesananService {
     pesanan_id, total_barang, transport, total,
   }) {
     const query = {
-      text: 'UPDATE pesanan SET total_barang = $1, transport = $3, total = $4 WHERE id = $2 RETURNING id',
+      text: 'UPDATE pesanan SET total_barang = $1, transport = $3, total = $4 WHERE id = $2 RETURNING *',
       values: [total_barang, pesanan_id, transport, total],
     };
     console.log(total_barang);
@@ -271,8 +271,9 @@ class PesananService {
     if (!result.rows.length) {
       throw new NotFoundError('Gagal memperbarui pesanan. Id tidak ditemukan');
     }
-
-    return result.rows[0].id;
+    console.log('setelah update transport ini hasilnya :');
+    console.log(result.rows);
+    return result.rows[0];
   }
 
   async verifiyMitraStatusPesanan(mitra_id) {
@@ -353,14 +354,14 @@ class PesananService {
   async payPesanan(pesanan_id) {
     const status = 'payment success';
     const query = {
-      text: 'UPDATE pesanan SET total = total - harga_skill, harga_skill = 0, status_order = $2 WHERE id = $1 RETURNING *',
+      text: 'UPDATE pesanan SET total = total - harga_skill, harga_skill = 0, status_order = $2 WHERE id = $1 RETURNING id, status_order',
       values: [pesanan_id, status],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui pesanan. Id tidak ditemukan');
+      throw new NotFoundError('Gagal melakukan pembayaran. Id tidak ditemukan');
     }
 
     return result.rows[0];
