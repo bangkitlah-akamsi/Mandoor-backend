@@ -220,7 +220,9 @@ class PesananService {
     const result = await this._pool.query(query);
     console.log(result.rows[0]);
 
-    if (result.rows[0].mitra_id === null) {
+    if (result.rows[0] === undefined) {
+      throw new NotFoundError('id pesanan tidak ditemukan');
+    } else if (result.rows[0].mitra_id === null) {
       return true;
     }
     throw new NotFoundError('Pesanan sudah diambil driver lain');

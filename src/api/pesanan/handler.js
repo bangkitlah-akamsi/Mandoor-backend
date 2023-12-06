@@ -109,35 +109,16 @@ class PesananHandler {
     return response;
   }
 
-  async getPesananBySkillMitraIdHandler(request, h) {
-    try {
-      const { mitra_id } = request.params;
+  async getPesananBySkillMitraIdHandler(request) {
+    const { mitra_id } = request.params;
 
-      const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
-      return {
-        status: 'success',
-        data: {
-          dataPesanan,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
+    return {
+      status: 'success',
+      data: {
+        dataPesanan,
+      },
+    };
   }
 
   async payPesananForUser(request, h) {

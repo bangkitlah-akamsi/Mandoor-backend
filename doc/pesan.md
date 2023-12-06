@@ -142,6 +142,42 @@ response : todo nomor wa user and mitra
 
 statusCode : 200 (OK)
 
+- **Get pesanan by user_id**
+
+method : **GET**
+
+path : /pesanan/user/{{user_id}}
+
+response :
+```
+{
+    "status": "success",
+    "data": {
+        "pesanan": [
+            {
+                "id": "pesanan-Q0zkDulaKUObBKsN",
+                "mitra_id": null,
+                "user_id": "user-ZhMAZArxM50H8oih",
+                "kecamatan_user": "Pasar Kliwon",
+                "kota_user": "Surakarta",
+                "kecamatan_mitra": null,
+                "kota_mitra": null,
+                "total_barang": null,
+                "harga_skill": 250000,
+                "transport": null,
+                "total": null,
+                "status_order": "search mitra",
+                "alamat": "tunggulsari pajang",
+                "waktu": "2023-12-06T05:44:54.138Z"
+            }
+        ]
+    }
+}
+```
+
+if status_code 200 (OK) : pesanan still process
+if status_code 404 (NotFound) : pesanan put in transaksi
+
 - **User After Pay Order**
 
 method : **PUT**
