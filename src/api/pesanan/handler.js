@@ -75,20 +75,32 @@ class PesananHandler {
   async endedPesananByMitra(request, h) {
     const { mitra_id } = request.params;
 
-    await this._service.deletePesananByMitraId(mitra_id);
+    const result = await this._service.endedPesananByMitraId(mitra_id);
     const response = h.response({
       status: 'success',
-      message: 'Pesanan telah diselesaikan',
+      message: result,
     });
     response.code(200);
     return response;
   }
 
-  async getPesananBySkillMitraId(request, h) {
-    try {
-      const { mitra_id } = request.params;
+  async getPesananBySkillMitraId(request) {
+    const { mitra_id } = request.params;
 
-      const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
+    const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
+    return {
+      status: 'success',
+      data: {
+        dataPesanan,
+      },
+    };
+  }
+
+  async payPesananForUser(request, h) {
+    try {
+      const { pesanan_id } = request.params;
+
+      const dataPesanan = await this._service.payPesanan(pesanan_id);
       return {
         status: 'success',
         data: {

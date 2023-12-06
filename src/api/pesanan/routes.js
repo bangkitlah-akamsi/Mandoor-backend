@@ -26,6 +26,11 @@ const routes = (handler) => [
   },
   {
     method: 'PUT',
+    path: '/pesanan/payment/{pesanan_id}',
+    handler: (request, h) => handler.payPesananForUser(request, h),
+  },
+  {
+    method: 'PUT',
     path: '/pesananmitra/{mitra_id}',
     handler: (request, h) => handler.endedPesananByMitra(request, h),
   },

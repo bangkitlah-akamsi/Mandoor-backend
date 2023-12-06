@@ -41,7 +41,20 @@ class MitrasService {
     const result = await this._pool.query(query);
 
     if (result.rows.length > 0) {
-      throw new InvariantError('Gagal menambahkan user. Username sudah digunakan.');
+      throw new InvariantError('Gagal menambahkan mitra. Nama sudah digunakan.');
+    }
+  }
+
+  async verifyNomorWa(nomorwa) {
+    const query = {
+      text: 'SELECT nomorwa FROM mitras WHERE nomorwa = $1',
+      values: [nomorwa],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows.length > 0) {
+      throw new InvariantError('Gagal menambahkan mitra. Nomor sudah digunakan.');
     }
   }
 
@@ -107,6 +120,8 @@ class MitrasService {
     await this.verifyNewMitraname(mitraname);
     // TODO: Verifikasi NoKTP, pastikan belum terdaftar.
     await this.verifyNewNoKTP(noKTP);
+    // TODO: Verifikasi nomorwa, pastikan belum terdaftar.
+    await this.verifyNomorWa(nomorwa);
     // TODO: Bila verifikasi lolos, maka masukkan mitra baru ke database.
     const mitra_id = `mitra-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);

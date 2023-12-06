@@ -89,7 +89,7 @@ class PesananService {
     user_id, kecamatan_user, kota_user, alamat, skill,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
-    const status_order = 'mencari mitra';
+    const status_order = 'search mitra';
     const waktu = new Date();
 
     let harga_skill = 0;
@@ -105,7 +105,7 @@ class PesananService {
     harga_skill = await this.generateTotalHargaSkill(pesanan_id);
     console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, status_order',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user, kota_user,
         harga_skill, alamat, status_order, waktu.toISOString(),
@@ -262,7 +262,7 @@ class PesananService {
 
   async editTransportById(id, transport, total) {
     const query = {
-      text: 'UPDATE pesanan SET transport = $1, total = $3 WHERE id = $2 RETURNING id, kecamatan_user, kecamatan_mitra',
+      text: 'UPDATE pesanan SET transport = $1, total = $3 WHERE id = $2 RETURNING *',
       values: [transport, id, total],
     };
 
@@ -295,7 +295,7 @@ class PesananService {
     // to do cek mitra id apakah sudah terisi
     await this.verifiyMitraStatusPesanan(mitra_id);
     await this.verifiyMitraIdPesanan(pesanan_id, mitra_id);
-    const status = 'berjalan';
+    const status = 'wait payment';
     const status_mitra = true;
     const query = {
       text: 'UPDATE pesanan SET mitra_id = mitras.id,\
@@ -348,6 +348,22 @@ class PesananService {
     total = parseInt(transport, 10) + parseInt(harga_skill, 10);
     const editPesanan = await this.editTransportById(pesanan_id, transport, total);
     return editPesanan;
+  }
+
+  async payPesanan(pesanan_id) {
+    const status = 'payment success';
+    const query = {
+      text: 'UPDATE pesanan SET total = total - harga_skill, harga_skill = 0, status_order = $2 WHERE id = $1 RETURNING *',
+      values: [pesanan_id, status],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui pesanan. Id tidak ditemukan');
+    }
+
+    return result.rows[0];
   }
 
   async addTransaksiByPesanan(mitra_id) {
@@ -405,13 +421,21 @@ class PesananService {
     return result.rows[0].id;
   }
 
-  async deletePesananByMitraId(id) {
-    const status = 'selesai';
-    const pesanan_id = await this.editStatusPesananById(id, status);
-    await this.addTransaksiByPesanan(id);
+  async getStatusPesananByMitraId(mitra_id) {
+    const query = {
+      text: 'SELECT id, status_order FROM pesanan WHERE mitra_id = $1',
+      values: [mitra_id],
+    };
+    const result = await this._pool.query(query);
 
-    await this.deletePesananHasSkill(pesanan_id);
-    await this.deletePesananHasBarang(pesanan_id);
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan');
+    }
+
+    return result.rows[0];
+  }
+
+  async deletePesananByMitraId(id) {
     const queryPesanan = {
       text: 'DELETE FROM pesanan WHERE mitra_id = $1 RETURNING id',
       values: [id],
@@ -423,10 +447,31 @@ class PesananService {
     if (!resultPesanan.rows.length) {
       throw new NotFoundError('gagal menghapus pesanan. Id tidak ditemukan');
     }
+
     const status_mitra = false;
     await this.editStatusMitraById(id, status_mitra);
 
     return resultPesanan.rows[0];
+  }
+
+  async endedPesananByMitraId(id) {
+    const datapesanan = await this.getStatusPesananByMitraId(id);
+    if (datapesanan.status_order !== 'payment success') {
+      await this.deletePesananHasSkill(datapesanan.id);
+      await this.deletePesananHasBarang(datapesanan.id);
+      await this.deletePesananByMitraId(id);
+
+      return 'Pesanan dibatalkan';
+    }
+    const status = 'completed';
+    const pesanan_id = await this.editStatusPesananById(id, status);
+    await this.addTransaksiByPesanan(id);
+
+    await this.deletePesananHasSkill(pesanan_id);
+    await this.deletePesananHasBarang(pesanan_id);
+    await this.deletePesananByMitraId(id);
+
+    return 'Pesanan telah diselesaikan';
   }
 }
 
