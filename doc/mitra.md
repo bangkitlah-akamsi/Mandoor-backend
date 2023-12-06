@@ -63,18 +63,19 @@ response :
     "status": "success",
     "data": {
         "Mitra": {
-            "id": "mitra-B7lp4nsqTtXDIhr8",
-            "email": "examplemitra@gmail.com",
-            "mitraname": "bayudsatriyo",
+            "id": "mitra-p38eULBlSASgDvnn",
+            "email": "examplemitra1872@gmail.com",
+            "mitraname": "bayudganteng",
             "fullname": "bayu dwi satriyo",
-            "password": "$2b$10$qaI/r/pa2RylpNyMvKsRkeOtXsc9u1IfSQrKxwF/a9aEcOw9oo1mu",
-            "noktp": "334466228300382",
-            "nomorwa": "098865543355677",
+            "password": "$2b$10$88GKelP/trpJbZw.obbQ0ea1MPwbwPVZqvI9hLRMitA2L9BJ5nQR.",
+            "noktp": "334466334444552",
+            "nomorwa": "0988652200662",
             "alamat": "Solo",
             "profile": null,
             "kecamatan": "Serengan",
             "kota": "Surakarta",
             "status_mitra": false,
+            "saldo": 2250000,
             "skillarray": [
                 "skill-I8EUMrIIl8P7p4hR",
                 "skill-DRxnaZ_DnBEZUUVP"

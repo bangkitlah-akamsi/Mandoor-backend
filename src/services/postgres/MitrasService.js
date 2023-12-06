@@ -126,10 +126,11 @@ class MitrasService {
     const mitra_id = `mitra-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);
     const status_mitra = false;
+    const saldo = 0;
     const query = {
-      text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota, status_mitra) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, email, password',
+      text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota, status_mitra, saldo) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, email, password',
       values: [mitra_id, email, mitraname, fullname,
-        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota, status_mitra],
+        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota, status_mitra, saldo],
     };
 
     const result = await this._pool.query(query);

@@ -131,6 +131,34 @@ class PesananService {
     return result.rows[0];
   }
 
+  async getPesananByUserId(user_id) {
+    const query = {
+      text: 'SELECT * FROM pesanan WHERE user_id = $1',
+      values: [user_id],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan, coba cek transaksi');
+    }
+
+    return result.rows;
+  }
+
+  async getPesananByMitraId(mitra_id) {
+    const query = {
+      text: 'SELECT * FROM pesanan WHERE mitra_id = $1',
+      values: [mitra_id],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan, coba cek transaksi');
+    }
+
+    return result.rows;
+  }
+
   async getPesananSnapById(id) {
     const query = {
       text: 'SELECT pesanan.*, fullname, email \
@@ -167,12 +195,13 @@ class PesananService {
   async getPesananByMitraSkillId(mitra_id) {
     const skill = await this._mitraservice.getMitraHasSkillById(mitra_id);
     const skillarray = await skill.map((element) => element.skill_id);
+    const status = 'search mitra';
     console.log(skillarray);
     const query = {
-      text: 'SELECT * FROM pesanan \
+      text: 'SELECT pesanan.*, MAX(skill_id) AS skill_id FROM pesanan \
       INNER JOIN pesananhasskill ON pesananhasskill.pesanan_id = pesanan.id \
-      WHERE pesananhasskill.skill_id LIKE ANY($1)',
-      values: [skillarray],
+      WHERE pesananhasskill.skill_id LIKE ANY($1) AND pesanan.status_order = $2 GROUP BY pesanan.id;',
+      values: [skillarray, status],
     };
     const result = await this._pool.query(query);
 
@@ -210,6 +239,25 @@ class PesananService {
     }
 
     return result.rows[0].id;
+  }
+
+  async editSaldoMitraById(pesanan_id) {
+    console.log(pesanan_id);
+    const query = {
+      text: 'UPDATE mitras \
+      SET saldo = mitras.saldo + pesanan.harga_skill \
+      FROM pesanan \
+      WHERE mitras.id = pesanan.mitra_id AND pesanan.id = $1 RETURNING mitras.id',
+      values: [pesanan_id],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal Menambahkan saldo, id tidak ditemukan');
+    }
+
+    return result.rows[0];
   }
 
   async editStatusMitraById(id, status_mitra) {
@@ -406,20 +454,6 @@ class PesananService {
       throw new NotFoundError('gagal menghapus skill. Id pesanan tidak ditemukan');
     }
     return resultPesananHasBarang.rows[0];
-  }
-
-  async getPesananByMitraId(mitra_id) {
-    const query = {
-      text: 'SELECT id FROM pesanan WHERE mitra_id = $1',
-      values: [mitra_id],
-    };
-    const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new NotFoundError('Pesanan tidak ditemukan');
-    }
-
-    return result.rows[0].id;
   }
 
   async getStatusPesananByMitraId(mitra_id) {

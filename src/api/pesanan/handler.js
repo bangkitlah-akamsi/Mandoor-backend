@@ -52,8 +52,33 @@ class PesananHandler {
   }
 
   // todo get pesanan by user id
+  async getPesananByUserIdHandler(request) {
+    const { user_id } = request.params;
+
+    const pesanan = await this._service.getPesananByUserId(user_id);
+
+    return {
+      status: 'success',
+      data: {
+        pesanan,
+      },
+    };
+  }
 
   // todo get pesanan by mitra id
+
+  async getPesananByMitraIdHandler(request) {
+    const { mitra_id } = request.params;
+
+    const pesanan = await this._service.getPesananByMitraId(mitra_id);
+
+    return {
+      status: 'success',
+      data: {
+        pesanan,
+      },
+    };
+  }
 
   // todo get pesanan by skill_id
 
@@ -84,22 +109,43 @@ class PesananHandler {
     return response;
   }
 
-  async getPesananBySkillMitraId(request) {
-    const { mitra_id } = request.params;
+  async getPesananBySkillMitraIdHandler(request, h) {
+    try {
+      const { mitra_id } = request.params;
 
-    const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
-    return {
-      status: 'success',
-      data: {
-        dataPesanan,
-      },
-    };
+      const dataPesanan = await this._service.getPesananByMitraSkillId(mitra_id);
+      return {
+        status: 'success',
+        data: {
+          dataPesanan,
+        },
+      };
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async payPesananForUser(request, h) {
     try {
       const { pesanan_id } = request.params;
 
+      const saldo = await this._service.editSaldoMitraById(pesanan_id);
+      console.log(saldo);
       const dataPesanan = await this._service.payPesanan(pesanan_id);
       return {
         status: 'success',
