@@ -1,5 +1,9 @@
 node_modules
 .env
 .prod.env
+<<<<<<< HEAD
 serviceaccountkey.json
 .gitignore
+=======
+serviceaccountkey.json
+>>>>>>> 9e74bdb7b084874a342fbfc3ec75aa99ab1079a7

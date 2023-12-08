@@ -5,7 +5,7 @@ const PesanPayloadSchema = Joi.object({
   kecamatan_user: Joi.string().required(),
   kota_user: Joi.string().required(),
   alamat: Joi.string().required(),
-  skill: Joi.array().required(),
+  skill: Joi.string().required(),
 });
 
 const AcceptedPesanPayloadSchema = Joi.object({
