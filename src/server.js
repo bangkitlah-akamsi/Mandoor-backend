@@ -1,8 +1,9 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert');
+const path = require('path');
 const ClientError = require('./exceptions/ClientError');
-// const path = require('path');
 
 // Users
 const users = require('./api/users');
@@ -36,6 +37,10 @@ const TransaksiService = require('./services/postgres/TransaksiService');
 // Token Snap
 const tokensnap = require('./api/tokenizerSnap');
 
+// storage
+const StorageService = require('./services/storage/StorageService');
+const UploadsValidator = require('./validator/uploads');
+
 // Authentications-Users
 const authenticationsusers = require('./api/authenticationUsers');
 const AuthenticationsUserService = require('./services/postgres/AuthenticationsUserService');
@@ -55,6 +60,7 @@ const init = async () => {
   const skillService = new SkillService();
   const transportService = new TransportService();
   const transaksiService = new TransaksiService();
+  const storageService = new StorageService(path.resolve(__dirname, '..', 'serviceaccountkey.json'), pesanService);
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -65,6 +71,13 @@ const init = async () => {
       },
     },
   });
+
+  // registrasi plugin eksternal
+  await server.register([
+    {
+      plugin: Inert,
+    },
+  ]);
 
   await server.register([
     {
@@ -103,7 +116,9 @@ const init = async () => {
       plugin: pesanan,
       options: {
         service: pesanService,
+        storageService,
         validator: PesanValidator,
+        UploadsValidator,
       },
     },
     {

@@ -1,8 +1,27 @@
+const path = require('path');
+
 const routes = (handler) => [
   {
     method: 'POST',
     path: '/pesananuser',
     handler: (request, h) => handler.postPesananHandler(request, h),
+    options: {
+      payload: {
+        allow: 'multipart/form-data',
+        multipart: true,
+        output: 'stream',
+        maxBytes: 512000, // 512KB
+      },
+    },
+  },
+  {
+    method: 'GET',
+    path: '/uploadGambar/{param*}',
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, 'file'),
+      },
+    },
   },
   {
     method: 'GET',
