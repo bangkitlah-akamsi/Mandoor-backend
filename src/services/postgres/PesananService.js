@@ -86,7 +86,7 @@ class PesananService {
   }
 
   async addPesanan({
-    user_id, kecamatan_user, kota_user, alamat, skillArray, fileLocation,
+    user_id, kecamatan_user, kota_user, alamat, skillArray, url,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'search mitra';
@@ -105,10 +105,10 @@ class PesananService {
     harga_skill = await this.generateTotalHargaSkill(pesanan_id);
     console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user, kota_user,
-        harga_skill, alamat, status_order, waktu.toISOString(), user_id, fileLocation,
+        harga_skill, alamat, status_order, waktu.toISOString(), user_id, url,
       ],
     };
 
@@ -160,6 +160,23 @@ class PesananService {
     }
 
     return result.rows;
+  }
+
+  async getUrlByMitraId(mitra_id) {
+    const query = {
+      text: 'SELECT * FROM pesanan WHERE mitra_id = $1',
+      values: [mitra_id],
+    };
+    const result = await this._pool.query(query);
+
+    console.log('ini mitrabyid pesanan :');
+    console.log(result.rows);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Pesanan tidak ditemukan, coba cek transaksi');
+    }
+
+    return result.rows[0].imageurl;
   }
 
   async getPesananSnapById(id) {

@@ -4,7 +4,7 @@ exports.shorthands = undefined;
 
 exports.up = (pgm) => {
   pgm.addColumn('pesanan', {
-    url: {
+    imageurl: {
       type: 'VARCHAR',
       notNull: false,
     },
@@ -12,5 +12,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropColumn('pesanan', 'url');
+  pgm.dropColumn('pesanan', 'imageurl');
 };

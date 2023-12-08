@@ -60,7 +60,7 @@ const init = async () => {
   const skillService = new SkillService();
   const transportService = new TransportService();
   const transaksiService = new TransaksiService();
-  const storageService = new StorageService(path.resolve(__dirname, 'api/pesanan/file/gambar'));
+  const storageService = new StorageService(path.resolve(__dirname, '..', 'serviceaccountkey.json'), pesanService);
 
   const server = Hapi.server({
     port: process.env.PORT,
