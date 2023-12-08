@@ -1,30 +1,61 @@
 const ClientError = require('../../exceptions/ClientError');
 
 class PesananHandler {
-  constructor(service, validator) {
+  constructor(service, storageService, validator, UploadsValidator) {
     this._service = service;
+    this._storageService = storageService;
     this._validator = validator;
+    this._UploadsValidator = UploadsValidator;
   }
 
   async postPesananHandler(request, h) {
-    this._validator.validatePesanPayload(request.payload);
+    try {
+      const { gambar = 'kosong' } = request.payload;
 
-    const {
-      user_id, kecamatan_user, kota_user, alamat, skill,
-    } = request.payload;
+      const {
+        user_id, kecamatan_user, kota_user, alamat, skill,
+      } = request.payload;
 
-    const pesan = await this._service.addPesanan({
-      user_id, kecamatan_user, kota_user, alamat, skill,
-    });
-    console.log(pesan);
+      this._validator.validatePesanPayload({
+        user_id, kecamatan_user, kota_user, alamat, skill,
+      });
+      this._UploadsValidator.validateGambarHeaders(gambar.hapi.headers);
 
-    const response = h.response({
-      status: 'success',
-      message: 'Pesanan berhasil dibuat',
-      data: pesan,
-    });
-    response.code(201);
-    return response;
+      const skillArray = JSON.parse(skill);
+      console.log(skillArray);
+      console.log(typeof (skillArray));
+
+      const filename = await this._storageService.writeFile(gambar, gambar.hapi);
+      const fileLocation = `http://${process.env.HOST}:${process.env.PORT}/uploadGambar/gambar/${filename}`;
+      const pesan = await this._service.addPesanan({
+        user_id, kecamatan_user, kota_user, alamat, skillArray, fileLocation,
+      });
+
+      const response = h.response({
+        status: 'success',
+        message: 'Pesanan berhasil dibuat',
+        data: pesan,
+      });
+      response.code(201);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async getAllPesananHandler() {
@@ -83,18 +114,37 @@ class PesananHandler {
   // todo get pesanan by skill_id
 
   async acceptPesananForMitra(request, h) {
-    this._validator.validateAcceptedPesanPayload(request.payload);
+    try {
+      this._validator.validateAcceptedPesanPayload(request.payload);
 
-    const { pesanan_id, mitra_id, barang } = request.payload;
+      const { pesanan_id, mitra_id, barang } = request.payload;
 
-    const result = await this._service.editPesananById({ pesanan_id, mitra_id, barang });
+      const result = await this._service.editPesananById({ pesanan_id, mitra_id, barang });
 
-    const response = h.response({
-      status: 'success',
-      message: result,
-    });
-    response.code(200);
-    return response;
+      const response = h.response({
+        status: 'success',
+        message: result,
+      });
+      response.code(200);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async endedPesananByMitra(request, h) {

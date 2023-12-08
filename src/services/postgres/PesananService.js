@@ -86,7 +86,7 @@ class PesananService {
   }
 
   async addPesanan({
-    user_id, kecamatan_user, kota_user, alamat, skill,
+    user_id, kecamatan_user, kota_user, alamat, skillArray, fileLocation,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'search mitra';
@@ -94,7 +94,7 @@ class PesananService {
 
     let harga_skill = 0;
     // Membuat array promise untuk setiap elemen barang
-    const promises = skill.map(
+    const promises = skillArray.map(
       ([skill_id, permeter]) => this.addPesananHasSkill({
         pesanan_id, skill_id, permeter,
       }),
@@ -105,10 +105,10 @@ class PesananService {
     harga_skill = await this.generateTotalHargaSkill(pesanan_id);
     console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user, kota_user,
-        harga_skill, alamat, status_order, waktu.toISOString(),
+        harga_skill, alamat, status_order, waktu.toISOString(), user_id, fileLocation,
       ],
     };
 
@@ -151,6 +151,9 @@ class PesananService {
       values: [mitra_id],
     };
     const result = await this._pool.query(query);
+
+    console.log('ini mitrabyid pesanan :');
+    console.log(result.rows);
 
     if (!result.rows.length) {
       throw new NotFoundError('Pesanan tidak ditemukan, coba cek transaksi');
@@ -353,10 +356,11 @@ class PesananService {
       kecamatan_mitra = mitras.kecamatan, \
       kota_mitra = mitras.kota, \
       status_order = $3, \
-      total_barang = 0 \
+      total_barang = 0, \
+      nomorwa_mitra = (SELECT nomorwa FROM mitras WHERE id = $4) \
        FROM mitras \
        WHERE pesanan.id = $1 AND mitras.id = $2 RETURNING pesanan.id, pesanan.kecamatan_user, pesanan.kecamatan_mitra, pesanan.harga_skill',
-      values: [pesanan_id, mitra_id, status],
+      values: [pesanan_id, mitra_id, status, mitra_id],
     };
 
     const result = await this._pool.query(query);
