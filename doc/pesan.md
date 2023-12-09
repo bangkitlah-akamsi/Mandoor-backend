@@ -8,14 +8,16 @@ method : **POST**
 
 path : /pesananuser
 
-request body : content JSON
+request body : content Form Data
 ```
 {
-   "user_id": "user-GvGZsdEg0SgK-Gyb",
-   "kecamatan_user": "Laweyan",
-   "kota_user": "Surakarta",
-   "alamat": "tunggulsari pajang",
-   "skill": [[{skillId}, {jumlah/luas yang perlu diperbaiki(number)}]]
+   KEY          Value
+   ________     ___________
+   user_id: user-GvGZsdEg0SgK-Gyb,
+   kecamatan_user: Laweyan,
+   kota_user: Surakarta,
+   alamat: tunggulsari pajang,
+   skill: [[{skillId}, {jumlah/luas yang perlu diperbaiki(number)}]]
 }
 ```
 
@@ -25,7 +27,7 @@ response :
     "status": "success",
     "message": "Pesanan berhasil dibuat",
     "data": {
-        "id": "pesanan-Sqda81e1r8meRhOc",
+        "id": "pesanan-9qVzgrxSm5WjMf_e",
         "mitra_id": null,
         "user_id": "user-ZhMAZArxM50H8oih",
         "kecamatan_user": "Pasar Kliwon",
@@ -38,7 +40,10 @@ response :
         "total": null,
         "status_order": "search mitra",
         "alamat": "tunggulsari pajang",
-        "waktu": "2023-12-06T05:03:14.145Z"
+        "waktu": "2023-12-09T01:34:23.011Z",
+        "nomorwa_user": "1701861114",
+        "nomorwa_mitra": null,
+        "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
     }
 }
 ```
@@ -108,7 +113,7 @@ method : **PUT**
 
 path : /pesananmitra
 
-request body : 
+request body : con5ent JSON
 ```
 {
     "pesanan_id": "{{pesanan_id}}",
@@ -117,13 +122,13 @@ request body :
 }
 ```
 
-response : todo nomor wa user and mitra
+response : 
 ```
 {
     "status": "success",
     "message": {
-        "id": "pesanan-buq0crRd0UBmmVAx",
-        "mitra_id": "mitra-MNLCyty1GcSc86Fk",
+        "id": "pesanan-9qVzgrxSm5WjMf_e",
+        "mitra_id": "mitra-p38eULBlSASgDvnn",
         "user_id": "user-ZhMAZArxM50H8oih",
         "kecamatan_user": "Pasar Kliwon",
         "kota_user": "Surakarta",
@@ -135,7 +140,10 @@ response : todo nomor wa user and mitra
         "total": 274600,
         "status_order": "wait payment",
         "alamat": "tunggulsari pajang",
-        "waktu": "2023-12-06T05:37:10.422Z"
+        "waktu": "2023-12-09T01:34:23.011Z",
+        "nomorwa_user": "1701861114",
+        "nomorwa_mitra": "0988652200662",
+        "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
     }
 }
 ```
@@ -148,6 +156,12 @@ method : **GET**
 
 path : /pesanan/user/{{user_id}}
 
+- **Get pesanan by mitra id**
+
+method : **GET**
+
+path : /pesanan/mitra/{{mitra_id}}
+
 response :
 ```
 {
@@ -155,20 +169,23 @@ response :
     "data": {
         "pesanan": [
             {
-                "id": "pesanan-Q0zkDulaKUObBKsN",
-                "mitra_id": null,
+                "id": "pesanan-9qVzgrxSm5WjMf_e",
+                "mitra_id": "mitra-p38eULBlSASgDvnn",
                 "user_id": "user-ZhMAZArxM50H8oih",
                 "kecamatan_user": "Pasar Kliwon",
                 "kota_user": "Surakarta",
-                "kecamatan_mitra": null,
-                "kota_mitra": null,
-                "total_barang": null,
+                "kecamatan_mitra": "Serengan",
+                "kota_mitra": "Surakarta",
+                "total_barang": 14000,
                 "harga_skill": 250000,
-                "transport": null,
-                "total": null,
-                "status_order": "search mitra",
+                "transport": 10600,
+                "total": 274600,
+                "status_order": "wait payment",
                 "alamat": "tunggulsari pajang",
-                "waktu": "2023-12-06T05:44:54.138Z"
+                "waktu": "2023-12-09T01:34:23.011Z",
+                "nomorwa_user": "1701861114",
+                "nomorwa_mitra": "0988652200662",
+                "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
             }
         ]
     }
@@ -221,4 +238,4 @@ Jika Pesanan dibatalkan maka
 }
 ```
 
-statusCode = 200(OK)
+statusCode = 400(OK)

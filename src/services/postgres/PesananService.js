@@ -1,7 +1,7 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 // const bcrypt = require('bcrypt');
-// const InvariantError = require('../../exceptions/InvariantError');
+const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class PesananService {
@@ -519,7 +519,7 @@ class PesananService {
       await this.deletePesananHasBarang(datapesanan.id);
       await this.deletePesananByMitraId(id);
 
-      return 'Pesanan dibatalkan';
+      throw new InvariantError('Pesanan dibatalkan');
     }
     const status = 'completed';
     const pesanan_id = await this.editStatusPesananById(id, status);
