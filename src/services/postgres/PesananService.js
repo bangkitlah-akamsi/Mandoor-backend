@@ -1,7 +1,7 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 // const bcrypt = require('bcrypt');
-// const InvariantError = require('../../exceptions/InvariantError');
+const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class PesananService {
@@ -105,7 +105,7 @@ class PesananService {
     harga_skill = await this.generateTotalHargaSkill(pesanan_id);
     console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, url) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user, kota_user,
         harga_skill, alamat, status_order, waktu.toISOString(), user_id, fileLocation,
@@ -502,7 +502,7 @@ class PesananService {
       await this.deletePesananHasBarang(datapesanan.id);
       await this.deletePesananByMitraId(id);
 
-      return 'Pesanan dibatalkan';
+      throw new InvariantError('Pesanan dibatalkan');
     }
     const status = 'completed';
     const pesanan_id = await this.editStatusPesananById(id, status);
