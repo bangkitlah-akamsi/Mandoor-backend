@@ -230,6 +230,8 @@ response :
 }
 ```
 
+statusCode = 200
+
 Jika Pesanan dibatalkan maka
 ```
 {
@@ -238,4 +240,4 @@ Jika Pesanan dibatalkan maka
 }
 ```
 
-statusCode = 400(OK)
+statusCode = 400
