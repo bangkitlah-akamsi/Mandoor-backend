@@ -43,7 +43,7 @@ response :
         "waktu": "2023-12-09T01:34:23.011Z",
         "nomorwa_user": "1701861114",
         "nomorwa_mitra": null,
-        "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
+        "imageurl": "http://storage.googleapis.com/mandoorbucket/uploads/1702110862998flower.jpg"
     }
 }
 ```
@@ -143,7 +143,7 @@ response :
         "waktu": "2023-12-09T01:34:23.011Z",
         "nomorwa_user": "1701861114",
         "nomorwa_mitra": "0988652200662",
-        "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
+        "imageurl": "http://storage.googleapis.com/mandoorbucket/uploads/1702110862998flower.jpg"
     }
 }
 ```
@@ -185,7 +185,7 @@ response :
                 "waktu": "2023-12-09T01:34:23.011Z",
                 "nomorwa_user": "1701861114",
                 "nomorwa_mitra": "0988652200662",
-                "imageurl": "http://localhost:8080/uploadGambar/gambar/1702110862998flower.jpg"
+                "imageurl": "http://storage.googleapis.com/mandoorbucket/uploads/1702110862998flower.jpg"
             }
         ]
     }
