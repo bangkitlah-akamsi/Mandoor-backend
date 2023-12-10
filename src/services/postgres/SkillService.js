@@ -87,7 +87,7 @@ class SkillService {
       FROM skill \
       JOIN skillhasitem ON skill.id = skillhasitem.skill_id \
       WHERE skillhasitem.item = $1;',
-      values: [item],
+      values: [item.toLowerCase()],
     };
     const result = await this._pool.query(query);
 
