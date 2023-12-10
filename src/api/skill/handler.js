@@ -1,3 +1,5 @@
+const ClientError = require('../../exceptions/ClientError');
+
 class SkillHandler {
   constructor(service, validator) {
     this._service = service;
@@ -5,21 +7,42 @@ class SkillHandler {
   }
 
   async postSkillHandler(request, h) {
-    this._validator.validateSkillPayload(request.payload);
-    const { nama_skill, harga_skill, hitungan } = request.payload;
+    try {
+      this._validator.validateSkillPayload(request.payload);
+      const {
+        nama_skill, harga_skill, hitungan, kata,
+      } = request.payload;
 
-    const dataSkill = await this._service.addSkill({
-      nama_skill, harga_skill, hitungan,
-    });
-    console.log(dataSkill);
+      const dataSkill = await this._service.addSkill({
+        nama_skill, harga_skill, hitungan, kata,
+      });
+      console.log(dataSkill);
 
-    const response = h.response({
-      status: 'success',
-      message: 'Skill berhasil ditambahkan',
-      data: dataSkill,
-    });
-    response.code(201);
-    return response;
+      const response = h.response({
+        status: 'success',
+        message: 'Skill berhasil ditambahkan',
+        data: dataSkill,
+      });
+      response.code(201);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async getAllSkillHandler() {
@@ -33,6 +56,17 @@ class SkillHandler {
     };
   }
 
+  async getAllItemHandler() {
+    // to do : validation credential admin
+    const Item = await this._service.getAllItem();
+    return {
+      status: 'success',
+      data: {
+        Item,
+      },
+    };
+  }
+
   async getSkillByIdHandler(request) {
     const { id } = request.params;
 
@@ -42,6 +76,19 @@ class SkillHandler {
       status: 'success',
       data: {
         skill,
+      },
+    };
+  }
+
+  async getSkillByItemHandler(request) {
+    const { item } = request.params;
+
+    const tukang = await this._service.getSkillByItem(item);
+
+    return {
+      status: 'success',
+      data: {
+        tukang,
       },
     };
   }

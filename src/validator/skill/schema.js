@@ -4,6 +4,7 @@ const SkillPayloadSchema = Joi.object({
   nama_skill: Joi.string().required(),
   harga_skill: Joi.number().required(),
   hitungan: Joi.string().required(),
+  kata: Joi.string().required(),
 });
 
 module.exports = { SkillPayloadSchema };
