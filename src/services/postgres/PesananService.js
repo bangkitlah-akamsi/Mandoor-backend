@@ -107,7 +107,7 @@ class PesananService {
     const query = {
       text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
-        pesanan_id, user_id, kecamatan_user.toLowerCase(), kota_user,
+        pesanan_id, user_id, kecamatan_user.toLowerCase(), kota_user.toLowerCase(),
         harga_skill, alamat, status_order, waktu.toISOString(), user_id, fileLocation,
       ],
     };
