@@ -11,7 +11,7 @@ class TransportService {
     const id = `transport-${nanoid(16)}`;
     const query = {
       text: 'INSERT INTO transport VALUES($1, $2, $3, $4) RETURNING id',
-      values: [id, kecamatan_user, kecamatan_mitra, jarak],
+      values: [id, kecamatan_user.toLowerCase(), kecamatan_mitra.toLowerCase(), jarak],
     };
 
     const result = await this._pool.query(query);

@@ -86,7 +86,7 @@ class PesananService {
   }
 
   async addPesanan({
-    user_id, kecamatan_user, kota_user, alamat, skillArray, url,
+    user_id, kecamatan_user, kota_user, alamat, skillArray, fileLocation,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'search mitra';
@@ -108,7 +108,7 @@ class PesananService {
       text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user.toLowerCase(), kota_user.toLowerCase(),
-        harga_skill, alamat, status_order, waktu.toISOString(), user_id, url,
+        harga_skill, alamat, status_order, waktu.toISOString(), user_id, fileLocation,
       ],
     };
 
@@ -160,23 +160,6 @@ class PesananService {
     }
 
     return result.rows;
-  }
-
-  async getUrlByMitraId(mitra_id) {
-    const query = {
-      text: 'SELECT * FROM pesanan WHERE mitra_id = $1',
-      values: [mitra_id],
-    };
-    const result = await this._pool.query(query);
-
-    console.log('ini mitrabyid pesanan :');
-    console.log(result.rows);
-
-    if (!result.rows.length) {
-      throw new NotFoundError('Pesanan tidak ditemukan, coba cek transaksi');
-    }
-
-    return result.rows[0].imageurl;
   }
 
   async getPesananSnapById(id) {
@@ -416,6 +399,7 @@ class PesananService {
       console.log(dataPesanan);
       return dataPesanan;
     }
+    // eslint-disable-next-line max-len
     const transport = await this.generateTransport(kecamatan_user, kecamatan_mitra);
     total = parseInt(transport, 10) + parseInt(harga_skill, 10);
     const editPesanan = await this.editTransportById(pesanan_id, transport, total);

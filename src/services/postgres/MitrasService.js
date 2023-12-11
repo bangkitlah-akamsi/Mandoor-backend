@@ -130,7 +130,8 @@ class MitrasService {
     const query = {
       text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota, status_mitra, saldo) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, email, password',
       values: [mitra_id, email, mitraname, fullname,
-        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota, status_mitra, saldo],
+        hashedPassword, noKTP, nomorwa, alamat,
+        kecamatan.toLowerCase(), kota.toLowerCase(), status_mitra, saldo],
     };
 
     const result = await this._pool.query(query);
