@@ -1,5 +1,3 @@
-const ClientError = require('../../exceptions/ClientError');
-
 class SkillHandler {
   constructor(service, validator) {
     this._service = service;
@@ -7,42 +5,23 @@ class SkillHandler {
   }
 
   async postSkillHandler(request, h) {
-    try {
-      this._validator.validateSkillPayload(request.payload);
-      const {
-        nama_skill, harga_skill, hitungan, kata,
-      } = request.payload;
+    this._validator.validateSkillPayload(request.payload);
+    const {
+      nama_skill, harga_skill, hitungan, kata,
+    } = request.payload;
 
-      const dataSkill = await this._service.addSkill({
-        nama_skill, harga_skill, hitungan, kata,
-      });
-      console.log(dataSkill);
+    const dataSkill = await this._service.addSkill({
+      nama_skill, harga_skill, hitungan, kata,
+    });
+    console.log(dataSkill);
 
-      const response = h.response({
-        status: 'success',
-        message: 'Skill berhasil ditambahkan',
-        data: dataSkill,
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Skill berhasil ditambahkan',
+      data: dataSkill,
+    });
+    response.code(201);
+    return response;
   }
 
   async getAllSkillHandler() {
