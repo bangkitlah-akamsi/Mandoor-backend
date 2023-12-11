@@ -107,7 +107,7 @@ class PesananService {
     const query = {
       text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
       values: [
-        pesanan_id, user_id, kecamatan_user, kota_user,
+        pesanan_id, user_id, kecamatan_user.toLowerCase(), kota_user.toLowerCase(),
         harga_skill, alamat, status_order, waktu.toISOString(), user_id, url,
       ],
     };
@@ -306,13 +306,13 @@ class PesananService {
   // todo get all pesananhasbarang
 
   async generateTransport(kecamatan_user, kecamatan_mitra) {
-    if (kecamatan_user === kecamatan_mitra) {
+    if (kecamatan_user.toLowerCase() === kecamatan_mitra.toLowerCase()) {
       return 7000;
     }
     const query = {
       text: 'SELECT jarak FROM transport WHERE ( kecamatan_user = $1 AND kecamatan_mitra = $2 ) \
       OR ( kecamatan_user = $2 AND kecamatan_mitra = $1 )',
-      values: [kecamatan_user, kecamatan_mitra],
+      values: [kecamatan_user.toLowerCase(), kecamatan_mitra.toLowerCase()],
     };
     const result = await this._pool.query(query);
 
