@@ -95,7 +95,7 @@ class SkillService {
       throw new NotFoundError('Tukang tidak ditemukan, silahkan pilih tukang lain');
     }
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async editSkillById(id, {
