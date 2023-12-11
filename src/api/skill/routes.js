@@ -11,8 +11,18 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
+    path: '/item',
+    handler: () => handler.getAllItemHandler(),
+  },
+  {
+    method: 'GET',
     path: '/skill/{id}',
     handler: (request, h) => handler.getSkillByIdHandler(request, h),
+  },
+  {
+    method: 'GET',
+    path: '/tukang/{item}',
+    handler: (request, h) => handler.getSkillByItemHandler(request, h),
   },
   {
     method: 'PUT',
@@ -23,6 +33,11 @@ const routes = (handler) => [
     method: 'DELETE',
     path: '/skill/{id}',
     handler: (request, h) => handler.deleteSkillByIdHandler(request, h),
+  },
+  {
+    method: 'DELETE',
+    path: '/item/{id}',
+    handler: (request, h) => handler.deleteItemByIdHandler(request, h),
   },
 ];
 
