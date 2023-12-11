@@ -34,6 +34,11 @@ const routes = (handler) => [
     path: '/skill/{id}',
     handler: (request, h) => handler.deleteSkillByIdHandler(request, h),
   },
+  {
+    method: 'DELETE',
+    path: '/item/{id}',
+    handler: (request, h) => handler.deleteItemByIdHandler(request, h),
+  },
 ];
 
 module.exports = routes;

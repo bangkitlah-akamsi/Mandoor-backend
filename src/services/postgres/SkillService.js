@@ -127,6 +127,19 @@ class SkillService {
     }
     return result.rows[0];
   }
+
+  async deleteItemById(id) {
+    const query = {
+      text: 'DELETE FROM skillhasitem WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('gagal menghapus item. Id tidak ditemukan');
+    }
+    return result.rows[0];
+  }
 }
 
 module.exports = SkillService;

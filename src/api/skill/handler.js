@@ -120,6 +120,17 @@ class SkillHandler {
     response.code(200);
     return response;
   }
+
+  async deleteItemByIdHandler(request, h) {
+    const { id } = request.params;
+    await this._service.deleteItemById(id);
+    const response = h.response({
+      status: 'success',
+      message: 'Item berhasil dihapus',
+    });
+    response.code(200);
+    return response;
+  }
 }
 
 module.exports = SkillHandler;
