@@ -9,33 +9,52 @@ class PesananHandler {
   }
 
   async postPesananHandler(request, h) {
-    const { gambar = 'kosong' } = request.payload;
+    try {
+      const { gambar = 'kosong' } = request.payload;
 
-    const {
-      user_id, kecamatan_user, kota_user, alamat, skill,
-    } = request.payload;
+      const {
+        user_id, kecamatan_user, kota_user, alamat, skill,
+      } = request.payload;
 
-    this._validator.validatePesanPayload({
-      user_id, kecamatan_user, kota_user, alamat, skill,
-    });
-    this._UploadsValidator.validateGambarHeaders(gambar.hapi.headers);
+      this._validator.validatePesanPayload({
+        user_id, kecamatan_user, kota_user, alamat, skill,
+      });
+      this._UploadsValidator.validateGambarHeaders(gambar.hapi.headers);
 
-    const skillArray = JSON.parse(skill);
-    console.log(skillArray);
-    console.log(typeof (skillArray));
+      const skillArray = JSON.parse(skill);
+      console.log(skillArray);
+      console.log(typeof (skillArray));
 
-    const url = await this._storageService.writeFile(gambar, gambar.hapi);
-    const pesan = await this._service.addPesanan({
-      user_id, kecamatan_user, kota_user, alamat, skillArray, url,
-    });
+      const url = await this._storageService.writeFile(gambar, gambar.hapi);
+      const pesan = await this._service.addPesanan({
+        user_id, kecamatan_user, kota_user, alamat, skillArray, url,
+      });
 
-    const response = h.response({
-      status: 'success',
-      message: 'Pesanan berhasil dibuat',
-      data: pesan,
-    });
-    response.code(201);
-    return response;
+      const response = h.response({
+        status: 'success',
+        message: 'Pesanan berhasil dibuat',
+        data: pesan,
+      });
+      response.code(201);
+      return response;
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+      // Server ERROR!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
   }
 
   async getAllPesananHandler() {

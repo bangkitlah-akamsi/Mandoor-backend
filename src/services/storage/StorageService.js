@@ -6,7 +6,7 @@ class StorageService {
   constructor(keyFileCredential, pesanService) {
     // Inisialisasi client Google Cloud Storage
     this.storage = new Storage({
-      keyFilename: keyFileCredential,
+      keyFilename: keyFileCredential, // hapus semua parameter storage ketika dideploy
       projectId: process.env.PROJECT_ID, // Ganti dengan ID proyek Google Cloud Anda
     });
     this.BUCKET_NAME = process.env.BUCKET_NAME;
