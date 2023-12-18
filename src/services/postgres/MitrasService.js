@@ -185,9 +185,11 @@ class MitrasService {
 
     const skill = await this.getMitraHasSkillById(result.rows[0].id);
     const skillarray = await skill.map((element) => element.skill_id);
+    const nama_skill = await skill.map((element) => element.nama_skill);
     const dataMitra = {
       ...result.rows[0],
       skillarray,
+      nama_skill,
     };
 
     return dataMitra;
