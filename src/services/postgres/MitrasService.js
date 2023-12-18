@@ -159,7 +159,11 @@ class MitrasService {
 
   async getMitraHasSkillById(id) {
     const query = {
-      text: 'SELECT skill_id FROM mitrahasskill WHERE mitra_id = $1',
+      text: 'SELECT mitrahasskill.skill_id, skill.nama_skill \
+      FROM mitrahasskill \
+      INNER JOIN skill \
+      ON mitrahasskill.skill_id = skill.id \
+      WHERE mitra_id = $1',
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -209,9 +213,11 @@ class MitrasService {
 
     const skill = await this.getMitraHasSkillById(id);
     const skillarray = await skill.map((element) => element.skill_id);
+    const nama_skill = await skill.map((element) => element.nama_skill);
     const dataMitra = {
       ...result.rows[0],
       skillarray,
+      nama_skill,
     };
 
     return dataMitra;
