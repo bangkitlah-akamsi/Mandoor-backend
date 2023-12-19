@@ -130,7 +130,8 @@ class MitrasService {
     const query = {
       text: 'INSERT INTO mitras (id, email, mitraname, fullname, password, noktp, nomorwa, alamat, kecamatan, kota, status_mitra, saldo) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, email, password',
       values: [mitra_id, email, mitraname, fullname,
-        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota, status_mitra, saldo],
+        hashedPassword, noKTP, nomorwa, alamat,
+        kecamatan.toLowerCase(), kota.toLowerCase(), status_mitra, saldo],
     };
 
     const result = await this._pool.query(query);
@@ -158,7 +159,11 @@ class MitrasService {
 
   async getMitraHasSkillById(id) {
     const query = {
-      text: 'SELECT skill_id FROM mitrahasskill WHERE mitra_id = $1',
+      text: 'SELECT mitrahasskill.skill_id, skill.nama_skill \
+      FROM mitrahasskill \
+      INNER JOIN skill \
+      ON mitrahasskill.skill_id = skill.id \
+      WHERE mitra_id = $1',
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -180,9 +185,11 @@ class MitrasService {
 
     const skill = await this.getMitraHasSkillById(result.rows[0].id);
     const skillarray = await skill.map((element) => element.skill_id);
+    const nama_skill = await skill.map((element) => element.nama_skill);
     const dataMitra = {
       ...result.rows[0],
       skillarray,
+      nama_skill,
     };
 
     return dataMitra;
@@ -208,9 +215,11 @@ class MitrasService {
 
     const skill = await this.getMitraHasSkillById(id);
     const skillarray = await skill.map((element) => element.skill_id);
+    const nama_skill = await skill.map((element) => element.nama_skill);
     const dataMitra = {
       ...result.rows[0],
       skillarray,
+      nama_skill,
     };
 
     return dataMitra;
@@ -247,7 +256,7 @@ class MitrasService {
     const query = {
       text: 'UPDATE mitras SET email = $2, mitraname = $3, fullname = $4, password = $5, noktp = $6, nomorwa = $7, alamat = $8, kecamatan = $9, kota = $10 WHERE id = $1 RETURNING id, email, password',
       values: [id, email, mitraname, fullname,
-        hashedPassword, noKTP, nomorwa, alamat, kecamatan, kota],
+        hashedPassword, noKTP, nomorwa, alamat, kecamatan.toLowerCase(), kota],
     };
 
     const result = await this._pool.query(query);

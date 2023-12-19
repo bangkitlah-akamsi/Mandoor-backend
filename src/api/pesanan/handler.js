@@ -1,5 +1,3 @@
-const ClientError = require('../../exceptions/ClientError');
-
 class PesananHandler {
   constructor(service, storageService, validator, UploadsValidator) {
     this._service = service;
@@ -94,69 +92,31 @@ class PesananHandler {
   // todo get pesanan by skill_id
 
   async acceptPesananForMitra(request, h) {
-    try {
-      this._validator.validateAcceptedPesanPayload(request.payload);
+    this._validator.validateAcceptedPesanPayload(request.payload);
 
-      const { pesanan_id, mitra_id, barang } = request.payload;
+    const { pesanan_id, mitra_id, barang } = request.payload;
 
-      const result = await this._service.editPesananById({ pesanan_id, mitra_id, barang });
+    const result = await this._service.editPesananById({ pesanan_id, mitra_id, barang });
 
-      const response = h.response({
-        status: 'success',
-        message: result,
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      message: result,
+    });
+    response.code(200);
+    return response;
   }
 
   async endedPesananByMitra(request, h) {
-    try {
-      const { mitra_id } = request.params;
+    const { mitra_id } = request.params;
 
-      await this._storageService.deleteFile(mitra_id);
-      const result = await this._service.endedPesananByMitraId(mitra_id);
-      const response = h.response({
-        status: 'success',
-        message: result,
-      });
-      response.code(200);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    await this._storageService.deleteFile(mitra_id);
+    const result = await this._service.endedPesananByMitraId(mitra_id);
+    const response = h.response({
+      status: 'success',
+      message: result,
+    });
+    response.code(200);
+    return response;
   }
 
   async getPesananBySkillMitraIdHandler(request) {
@@ -171,37 +131,18 @@ class PesananHandler {
     };
   }
 
-  async payPesananForUser(request, h) {
-    try {
-      const { pesanan_id } = request.params;
+  async payPesananForUser(request) {
+    const { pesanan_id } = request.params;
 
-      const saldo = await this._service.editSaldoMitraById(pesanan_id);
-      console.log(saldo);
-      const dataPesanan = await this._service.payPesanan(pesanan_id);
-      return {
-        status: 'success',
-        data: {
-          dataPesanan,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const saldo = await this._service.editSaldoMitraById(pesanan_id);
+    console.log(saldo);
+    const dataPesanan = await this._service.payPesanan(pesanan_id);
+    return {
+      status: 'success',
+      data: {
+        dataPesanan,
+      },
+    };
   }
 }
 

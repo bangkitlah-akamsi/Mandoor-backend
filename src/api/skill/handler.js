@@ -6,10 +6,12 @@ class SkillHandler {
 
   async postSkillHandler(request, h) {
     this._validator.validateSkillPayload(request.payload);
-    const { nama_skill, harga_skill, hitungan } = request.payload;
+    const {
+      nama_skill, harga_skill, hitungan, kata,
+    } = request.payload;
 
     const dataSkill = await this._service.addSkill({
-      nama_skill, harga_skill, hitungan,
+      nama_skill, harga_skill, hitungan, kata,
     });
     console.log(dataSkill);
 
@@ -33,6 +35,17 @@ class SkillHandler {
     };
   }
 
+  async getAllItemHandler() {
+    // to do : validation credential admin
+    const Item = await this._service.getAllItem();
+    return {
+      status: 'success',
+      data: {
+        Item,
+      },
+    };
+  }
+
   async getSkillByIdHandler(request) {
     const { id } = request.params;
 
@@ -42,6 +55,19 @@ class SkillHandler {
       status: 'success',
       data: {
         skill,
+      },
+    };
+  }
+
+  async getSkillByItemHandler(request) {
+    const { item } = request.params;
+
+    const tukang = await this._service.getSkillByItem(item);
+
+    return {
+      status: 'success',
+      data: {
+        tukang,
       },
     };
   }
@@ -69,6 +95,17 @@ class SkillHandler {
     const response = h.response({
       status: 'success',
       message: 'Skill berhasil dihapus',
+    });
+    response.code(200);
+    return response;
+  }
+
+  async deleteItemByIdHandler(request, h) {
+    const { id } = request.params;
+    await this._service.deleteItemById(id);
+    const response = h.response({
+      status: 'success',
+      message: 'Item berhasil dihapus',
     });
     response.code(200);
     return response;
