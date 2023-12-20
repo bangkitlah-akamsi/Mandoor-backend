@@ -10,7 +10,7 @@ class PesananHandler {
     const { gambar = 'kosong' } = request.payload;
 
     const {
-      user_id, kecamatan_user, kota_user, alamat, skill,
+      user_id, deskripsi, kecamatan_user, kota_user, alamat, skill,
     } = request.payload;
 
     this._validator.validatePesanPayload({
@@ -24,7 +24,7 @@ class PesananHandler {
 
     const url = await this._storageService.writeFile(gambar, gambar.hapi);
     const pesan = await this._service.addPesanan({
-      user_id, kecamatan_user, kota_user, alamat, skillArray, url,
+      user_id, deskripsi, kecamatan_user, kota_user, alamat, skillArray, url,
     });
 
     const response = h.response({

@@ -86,7 +86,7 @@ class PesananService {
   }
 
   async addPesanan({
-    user_id, kecamatan_user, kota_user, alamat, skillArray, url,
+    user_id, deskripsi, kecamatan_user, kota_user, alamat, skillArray, url,
   }) {
     const pesanan_id = `pesanan-${nanoid(16)}`;
     const status_order = 'search mitra';
@@ -105,10 +105,10 @@ class PesananService {
     harga_skill = await this.generateTotalHargaSkill(pesanan_id);
     console.log(pesananhasskill);
     const query = {
-      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10) RETURNING *',
+      text: 'INSERT INTO pesanan (id, user_id, kecamatan_user, kota_user, harga_skill, alamat, status_order, waktu, nomorwa_user, imageurl, deskripsi) VALUES($1, $2, $3, $4, $5, $6, $7, $8, (SELECT nomorwa FROM users WHERE id = $9), $10, $11) RETURNING *',
       values: [
         pesanan_id, user_id, kecamatan_user.toLowerCase(), kota_user.toLowerCase(),
-        harga_skill, alamat, status_order, waktu.toISOString(), user_id, url,
+        harga_skill, alamat, status_order, waktu.toISOString(), user_id, url, deskripsi,
       ],
     };
 
@@ -440,8 +440,8 @@ class PesananService {
 
   async addTransaksiByPesanan(mitra_id) {
     const query = {
-      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu_transaksi) \
-      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu \
+      text: 'INSERT INTO transaksi (id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu_transaksi, deskripsi) \
+      SELECT id, mitra_id, user_id, kecamatan_user, kota_user, kecamatan_mitra, kota_mitra, total_barang, harga_skill, transport, total, status_order, waktu, deskripsi \
       FROM pesanan WHERE mitra_id = $1',
       values: [mitra_id],
     };
