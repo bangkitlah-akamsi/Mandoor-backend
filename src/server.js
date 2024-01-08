@@ -86,6 +86,7 @@ const init = async () => {
   const swaggerOptions = {
     info: {
       title: 'Mandoor App Documentation',
+      description: 'Created By : Bayu Dwi Satriyo',
       version: pgk.version,
     },
   };
