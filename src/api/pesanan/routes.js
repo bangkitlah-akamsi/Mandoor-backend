@@ -5,7 +5,6 @@ const {
   MitraId,
   UserId,
   PesananResponseSchema,
-  PesanSchema,
   AcceptedResponseSchema,
   idpesanan,
   getPesananByskillschema,
@@ -29,9 +28,6 @@ const routes = (handler) => [
       description: 'Registration User',
       notes: 'Endpoint untuk melakukan registrasi user baru',
       tags: ['api', 'pesanan'], // ADD THIS TAG
-      validate: {
-        payload: PesanSchema,
-      },
       plugins: {
         'hapi-swagger': {
           consumes: ['multipart/form-data'],
