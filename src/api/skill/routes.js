@@ -1,3 +1,5 @@
+const { getskillschema, ErrorNotFoundSchema } = require('../../validator/skill/schema');
+
 const routes = (handler) => [
   {
     method: 'POST',
@@ -8,6 +10,26 @@ const routes = (handler) => [
     method: 'GET',
     path: '/skill',
     handler: () => handler.getAllSkillHandler(),
+    config: {
+      description: 'Get All Skill',
+      notes: 'Endpoint untuk mendapatkan data semua skill yang tersedia',
+      tags: ['api', 'skill'], // ADD THIS TAG
+      plugins: {
+        'hapi-swagger': {
+          responses: {
+            // Menambahkan response sukses
+            200: {
+              description: 'Pesanan data',
+              schema: getskillschema,
+            },
+            404: {
+              description: 'Data tidak ditemukan',
+              schema: ErrorNotFoundSchema,
+            },
+          },
+        },
+      },
+    },
   },
   {
     method: 'GET',

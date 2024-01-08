@@ -1,9 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const path = require('path');
+const HapiSwagger = require('hapi-swagger');
+const Vision = require('@hapi/vision');
 const ClientError = require('./exceptions/ClientError');
+const pgk = require('../package.json');
 
 // Users
 const users = require('./api/users');
@@ -76,6 +80,21 @@ const init = async () => {
   await server.register([
     {
       plugin: Inert,
+    },
+  ]);
+
+  const swaggerOptions = {
+    info: {
+      title: 'Mandoor App Documentation',
+      version: pgk.version,
+    },
+  };
+
+  await server.register([
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: swaggerOptions,
     },
   ]);
 
